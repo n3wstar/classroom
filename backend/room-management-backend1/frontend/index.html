@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Админ-панель Управление аудиториями</title>
+    <style>
+        body { font-family: monospace; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .section { 
+            background: white; 
+            padding: 15px; 
+            margin-bottom: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .section h2 { margin-top: 0; border-bottom: 1px solid #ccc; padding-bottom: 8px; }
+        .flex-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+        input, select, button { padding: 6px 12px; font-size: 14px; }
+        button { cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+        button.danger { background: #dc3545; }
+        button.danger:hover { background: #a71d2a; }
+        button.success { background: #28a745; }
+        pre { 
+            background: #f8f9fa; 
+            padding: 10px; 
+            border-radius: 4px; 
+            overflow-x: auto; 
+            font-size: 12px; 
+            max-height: 300px; 
+            overflow-y: auto;
+        }
+        .token-status { 
+            background: #e8f4fd; 
+            padding: 8px; 
+            border-radius: 4px; 
+            font-family: monospace; 
+            font-size: 12px;
+            word-break: break-all;
+        }
+        hr { margin: 20px 0; }
+        .badge { 
+            display: inline-block; 
+            background: #17a2b8; 
+            color: white; 
+            padding: 2px 6px; 
+            border-radius: 10px; 
+            font-size: 10px; 
+            margin-left: 5px;
+        }
+        .tab { 
+            display: inline-block; 
+            padding: 8px 16px; 
+            cursor: pointer; 
+            background: #e9ecef; 
+            border-radius: 4px 4px 0 0;
+        }
+        .tab.active { background: white; border-bottom: 2px solid #007bff; }
+        .tab-content { display: none; padding: 15px; background: white; border-radius: 0 4px 4px 4px; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🏢 Управление аудиторным фондом</h1>
+    
+    <!-- Аутентификация -->
+    <div class="section">
+        <h2>🔐 Аутентификация</h2>
+        <div class="flex-row">
+            <input type="text" id="loginEmail" placeholder="Email" value="admin@urfu.ru">
+            <input type="password" id="loginPassword" placeholder="Пароль" value="any-password">
+            <button onclick="login()">Войти</button>
+            <button onclick="clearToken()" class="danger">Очистить токен</button>
+            <button onclick="getProfile()">Мой профиль</button>
+        </div>
+        <div class="token-status" id="tokenStatus">⚪ Токен не установлен</div>
+    </div>
+    
+    <!-- Табы для навигации -->
+    <div>
+        <span class="tab active" onclick="showTab('buildings')">🏢 Здания</span>
+        <span class="tab" onclick="showTab('floors')">📊 Этажи</span>
+        <span class="tab" onclick="showTab('rooms')">🚪 Аудитории</span>
+        <span class="tab" onclick="showTab('features')">🔧 Оснащение</span>
+        <span class="tab" onclick="showTab('media')">🖼️ Медиа</span>
+        <span class="tab" onclick="showTab('tickets')">🎫 Заявки</span>
+        <span class="tab" onclick="showTab('users')">👥 Пользователи</span>
+        <span class="tab" onclick="showTab('logs')">📋 Логи</span>
+    </div>
+    
+    <!-- ==================== ЗДАНИЯ ==================== -->
+    <div id="buildings" class="tab-content active">
+        <div class="section">
+            <h2>🏢 Здания <span class="badge">CRUD</span></h2>
+            <div class="flex-row">
+                <input type="text" id="buildingName" placeholder="Название" value="ИРИТ-РТФ">
+                <input type="number" id="buildingFloors" placeholder="Этажей" value="5">
+                <button onclick="createBuilding()">➕ Создать здание</button>
+                <button onclick="getBuildings()">📋 Список зданий</button>
+                <button onclick="getBuildingStats()">📊 Статистика</button>
+            </div>
+            <div class="flex-row">
+                <input type="text" id="buildingId" placeholder="ID здания для редактирования/удаления">
+                <input type="text" id="editBuildingName" placeholder="Новое название">
+                <button onclick="updateBuilding()">✏️ Обновить</button>
+                <button onclick="deleteBuilding()" class="danger">🗑️ Удалить</button>
+            </div>
+            <pre id="buildingsResult">Результат:</pre>
+        </div>
+    </div>
+    
+    <!-- ==================== ЭТАЖИ ==================== -->
+    <div id="floors" class="tab-content">
+        <div class="section">
+            <h2>📊 Этажи</h2>
+            <div class="flex-row">
+                <input type="text" id="floorBuildingId" placeholder="ID здания">
+                <button onclick="getFloorsByBuilding()">📋 Получить этажи</button>
+                <button onclick="getFloorNumbers()">🔢 Номера этажей</button>
+            </div>
+            <div class="flex-row">
+                <input type="text" id="floorId" placeholder="ID этажа">
+                <input type="text" id="floorName" placeholder="Новое название этажа">
+                <button onclick="updateFloor()">✏️ Обновить название</button>
+                <button onclick="getFloorById()">🔍 Найти этаж</button>
+            </div>
+            <h3>📐 Схема этажа</h3>
+            <div class="flex-row">
+                <input type="file" id="schemaFile" accept="image/*">
+                <input type="text" id="schemaFloorId" placeholder="ID этажа">
+                <button onclick="uploadSchema()">📤 Загрузить схему</button>
+                <button onclick="getSchema()">📋 Получить схему</button>
+                <button onclick="deleteSchema()" class="danger">🗑️ Удалить схему</button>
+            </div>
+            <pre id="floorsResult">Результат:</pre>
+        </div>
+    </div>
+    
+    <!-- ==================== АУДИТОРИИ ==================== -->
+    <div id="rooms" class="tab-content">
+    <div class="section">
+        <h2>🚪 Аудитории <span class="badge">CRUD + фильтры</span></h2>
+        
+        <!-- Создание аудитории -->
+        <h3>➕ Создание аудитории</h3>
+        <div class="flex-row">
+            <input type="text" id="roomNumber" placeholder="Номер" value="301">
+            <input type="text" id="roomFloorId" placeholder="ID этажа">
+            <select id="roomPurpose">
+                <option value="Лекционная аудитория">Лекционная аудитория</option>
+                <option value="Компьютерный класс">Компьютерный класс</option>
+                <option value="Мультимедийная аудитория">Мультимедийная аудитория</option>
+                <option value="Лаборатория">Лаборатория</option>
+                <option value="Административный кабинет">Административный кабинет</option>
+                <option value="Санузел">Санузел</option>
+                <option value="Склад">Склад</option>
+                <option value="Техническое помещение">Техническое помещение</option>
+            </select>
+            <input type="number" id="roomCapacity" placeholder="Вместимость" value="60">
+            <input type="text" id="roomArea" placeholder="Площадь" value="75.5">
+            <textarea id="roomDesc" placeholder="Описание" rows="1" cols="30"></textarea>
+            <button onclick="createRoom()" class="success">➕ Создать</button>
+        </div>
+        
+        <hr>
+        
+        <!-- Получение и поиск -->
+        <h3>📋 Получение и поиск</h3>
+        <div class="flex-row">
+            <button onclick="getRooms()">📋 Все аудитории</button>
+            <button onclick="getRoomsFiltered()">🔍 Фильтр (этаж 3, вмест. от 30)</button>
+            <button onclick="getRoomPurposes()">🏷️ Типы помещений</button>
+            <button onclick="getRoomStats()">📊 Статистика</button>
+        </div>
+        <div class="flex-row">
+            <input type="text" id="roomSearchId" placeholder="ID аудитории">
+            <button onclick="getRoomById()">🔍 Найти по ID</button>
+            <input type="text" id="roomSearchNumber" placeholder="Номер аудитории">
+            <button onclick="getRoomByNumber()">🔍 Найти по номеру</button>
+            <button onclick="deleteRoom()" class="danger">🗑️ Удалить</button>
+        </div>
+        
+        <hr>
+        
+        <!-- Редактирование аудитории (полный функционал) -->
+        <h3>✏️ Редактирование аудитории</h3>
+        <div class="flex-row">
+            <input type="text" id="editRoomId" placeholder="ID аудитории для редактирования">
+            <button onclick="loadRoomForEdit()" class="success">📂 Загрузить данные</button>
+        </div>
+        
+        <div id="editRoomForm" style="display: none; border: 1px solid #ccc; padding: 15px; margin-top: 10px; border-radius: 5px;">
+            <h4>Редактирование аудитории</h4>
+            <div class="flex-row">
+                <label style="width: 100px;">Номер:</label>
+                <input type="text" id="editNumber" placeholder="Номер">
+            </div>
+            <div class="flex-row">
+                <label style="width: 100px;">Этаж:</label>
+                <input type="text" id="editFloor" placeholder="Этаж" readonly disabled style="background: #f0f0f0;">
+            </div>
+            <div class="flex-row">
+                <label style="width: 100px;">Тип помещения:</label>
+                <select id="editPurpose">
+                    <option value="Лекционная аудитория">Лекционная аудитория</option>
+                    <option value="Компьютерный класс">Компьютерный класс</option>
+                    <option value="Мультимедийная аудитория">Мультимедийная аудитория</option>
+                    <option value="Лаборатория">Лаборатория</option>
+                    <option value="Административный кабинет">Административный кабинет</option>
+                    <option value="Санузел">Санузел</option>
+                    <option value="Склад">Склад</option>
+                    <option value="Техническое помещение">Техническое помещение</option>
+                </select>
+            </div>
+            <div class="flex-row">
+                <label style="width: 100px;">Вместимость:</label>
+                <input type="number" id="editCapacity" placeholder="Вместимость">
+            </div>
+            <div class="flex-row">
+                <label style="width: 100px;">Площадь:</label>
+                <input type="text" id="editArea" placeholder="Площадь">
+            </div>
+            <div class="flex-row">
+                <label style="width: 100px;">Описание:</label>
+                <textarea id="editDescription" rows="2" cols="40" placeholder="Описание"></textarea>
+            </div>
+            
+            <h4>🔧 Оснащение <button onclick="openFeaturesModal()" type="button">✏️ Редактировать</button></h4>
+            <pre id="editFeaturesPreview" style="background: #f5f5f5; padding: 8px; font-size: 12px; max-height: 100px; overflow: auto;">Нет данных</pre>
+            
+            <h4>🖼️ Медиафайлы</h4>
+            <div class="flex-row">
+                <input type="file" id="editMediaFile" accept="image/*">
+                <select id="editMediaType">
+                    <option value="photo">Фотография</option>
+                    <option value="panorama">Панорама 360°</option>
+                </select>
+                <button onclick="uploadEditMedia()">📤 Загрузить</button>
+            </div>
+            <div id="editMediaPreview" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;"></div>
+            
+            <div class="flex-row" style="margin-top: 15px;">
+                <button onclick="saveRoomEdit()" class="success">💾 Сохранить изменения</button>
+                <button onclick="closeEditForm()" class="danger">❌ Отмена</button>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <!-- Расширенный поиск и фильтрация -->
+        <h3>🔎 Расширенный поиск и фильтрация</h3>
+        <div class="flex-row">
+            <input type="text" id="searchQuery" placeholder="Поиск по номеру">
+            <input type="text" id="filterFloorId" placeholder="ID этажа">
+            <select id="filterPurpose">
+                <option value="">Все типы</option>
+                <option value="Лекционная аудитория">Лекционная</option>
+                <option value="Компьютерный класс">Компьютерный класс</option>
+                <option value="Мультимедийная аудитория">Мультимедийная</option>
+                <option value="Лаборатория">Лаборатория</option>
+            </select>
+            <input type="number" id="filterCapacityFrom" placeholder="Вмест. от">
+            <input type="number" id="filterCapacityTo" placeholder="Вмест. до">
+            <input type="text" id="filterFeatures" placeholder="Оснащение (projector:1)">
+            <button onclick="advancedSearch()">🔎 Поиск</button>
+            <button onclick="clearFilters()">🗑️ Сбросить фильтры</button>
+        </div>
+        
+        <pre id="roomsResult">Результат:</pre>
+    </div>
+</div>
+
+<!-- Модальное окно для редактирования оснащения -->
+<div id="featuresModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="background: white; margin: 50px auto; padding: 20px; width: 80%; max-width: 800px; border-radius: 8px; max-height: 80%; overflow: auto;">
+        <h3>Редактирование оснащения</h3>
+        <div id="featuresList"></div>
+        <button onclick="addFeatureRow()">➕ Добавить позицию</button>
+        <div style="margin-top: 20px;">
+            <button onclick="saveFeatures()" class="success">💾 Сохранить</button>
+            <button onclick="closeFeaturesModal()" class="danger">❌ Отмена</button>
+        </div>
+    </div>
+</div>
+    
+    
+    <!-- ==================== ОСНАЩЕНИЕ ==================== -->
+    <div id="features" class="tab-content">
+        <div class="section">
+            <h2>🔧 Оснащение аудиторий</h2>
+            <div class="flex-row">
+                <input type="text" id="featureRoomId" placeholder="ID аудитории">
+                <input type="text" id="featureName" placeholder="Название (projector, computers)" value="projector">
+                <input type="text" id="featureValue" placeholder="Значение" value="Epson EB-695Wi">
+                <input type="number" id="featureQuantity" placeholder="Количество" value="1">
+                <input type="text" id="featureSpecs" placeholder="Тех. характеристики" value="4K, 3500 люмен">
+                <button onclick="createFeature()">➕ Добавить оснащение</button>
+            </div>
+            <div class="flex-row">
+                <button onclick="getFeaturesByRoom()">📋 Оснащение аудитории</button>
+                <input type="text" id="featureId" placeholder="ID оснащения">
+                <button onclick="deleteFeature()" class="danger">🗑️ Удалить</button>
+            </div>
+            <pre id="featuresResult">Результат:</pre>
+        </div>
+    </div>
+    
+    <!-- ==================== МЕДИА ==================== -->
+    <div id="media" class="tab-content">
+        <div class="section">
+            <h2>🖼️ Медиафайлы (фото и панорамы)</h2>
+            <div class="flex-row">
+                <input type="file" id="mediaFile" accept="image/*">
+                <select id="mediaType">
+                    <option value="photo">Фотография</option>
+                    <option value="panorama">Панорама 360°</option>
+                </select>
+                <input type="text" id="mediaRoomId" placeholder="ID аудитории">
+                <button onclick="uploadMedia()">📤 Загрузить</button>
+            </div>
+            <div class="flex-row">
+                <button onclick="getMediaByRoom()">📋 Медиа аудитории</button>
+                <button onclick="getPanorama()">🌍 Получить панораму</button>
+                <button onclick="getPhotos()">🖼️ Получить фото</button>
+                <input type="text" id="mediaId" placeholder="ID медиа">
+                <button onclick="deleteMedia()" class="danger">🗑️ Удалить</button>
+            </div>
+            <pre id="mediaResult">Результат:</pre>
+        </div>
+    </div>
+    
+    <!-- ==================== ЗАЯВКИ ==================== -->
+<div id="tickets" class="tab-content">
+    <div class="section">
+        <h2>🎫 Заявки на обслуживание</h2>
+        
+        <!-- Подача заявки (без авторизации) -->
+        <h3>📝 Подача заявки (внешняя форма)</h3>
+        <div class="flex-row">
+            <input type="text" id="ticketRoomNumber" placeholder="Номер аудитории" value="301">
+            <textarea id="ticketDescription" placeholder="Описание проблемы" rows="1" cols="40">Не работает проектор</textarea>
+            <input type="email" id="ticketEmail" placeholder="Email" value="user@example.com">
+            <button onclick="createTicketExternal()" class="success">📝 Отправить заявку</button>
+        </div>
+        
+        <hr>
+        
+        <!-- Получение заявок -->
+        <h3>📋 Просмотр заявок</h3>
+        <div class="flex-row">
+            <button onclick="getAllTickets()">📋 Все заявки</button>
+            <button onclick="getMyTickets()">👤 Мои заявки</button>
+            <button onclick="getTicketStats()">📊 Статистика</button>
+            <button onclick="getRoomsWithActiveTickets()">📍 Аудитории с активными заявками</button>
+        </div>
+        <div class="flex-row">
+            <input type="text" id="ticketsRoomId" placeholder="ID аудитории">
+            <button onclick="getTicketsByRoom()">🏢 Заявки по аудитории</button>
+            <input type="text" id="ticketId" placeholder="ID заявки">
+            <button onclick="getTicketById()">🔍 Найти заявку</button>
+        </div>
+        
+        <!-- Фильтры -->
+        <h3>🔍 Фильтрация заявок</h3>
+        <div class="flex-row">
+            <input type="text" id="filterBuildingId" placeholder="ID здания">
+            <input type="text" id="filterStatuses" placeholder="Статусы (через запятую: new,assigned,in_progress,closed)">
+            <button onclick="getAllTickets()">🔍 Применить фильтр</button>
+        </div>
+        
+        <hr>
+        
+        <!-- Действия над заявкой -->
+        <h3>⚙️ Действия над заявкой</h3>
+        <div class="flex-row">
+            <input type="text" id="ticketActionId" placeholder="ID заявки">
+            <select id="ticketStatus">
+                <option value="new">Новая</option>
+                <option value="assigned">Назначена</option>
+                <option value="in_progress">В работе</option>
+                <option value="closed">Закрыта</option>
+            </select>
+            <button onclick="updateTicketStatus()">🔄 Изменить статус</button>
+        </div>
+        <div class="flex-row">
+            <input type="text" id="assignTicketId" placeholder="ID заявки">
+            <input type="text" id="assignUserId" placeholder="ID исполнителя">
+            <button onclick="assignTicket()">👤 Назначить исполнителя</button>
+        </div>
+        <div class="flex-row">
+            <input type="text" id="takeTicketId" placeholder="ID заявки">
+            <button onclick="takeTicket()">📋 Взять в работу</button>
+            <button onclick="closeTicket()">✅ Закрыть заявку</button>
+        </div>
+        
+        <hr>
+        
+        <!-- Управление опросом Яндекс Форм (только суперадмин) -->
+        <h3>🤖 Управление опросом Яндекс Форм</h3>
+        <div class="flex-row">
+            <button onclick="manualPoll()" class="success">🔄 Ручной опрос</button>
+            <button onclick="resetPollCounter()" class="danger">🗑️ Сбросить счетчик</button>
+            <button onclick="getPollStatus()">📊 Статус проверки</button>
+            <button onclick="testYandexApi()">🔌 Тест API</button>
+        </div>
+        <div class="flex-row">
+            <input type="text" id="statsBuildingId" placeholder="ID здания для статистики">
+        </div>
+        
+        <pre id="ticketsResult">Результат:</pre>
+    </div>
+</div>
+    
+    <!-- ==================== ПОЛЬЗОВАТЕЛИ ==================== -->
+    <div id="users" class="tab-content">
+        <div class="section">
+            <h2>👥 Управление пользователями (только суперадмин)</h2>
+            <div class="flex-row">
+                <button onclick="getAllUsers()">📋 Все пользователи</button>
+                <input type="text" id="ldapSearchQuery" placeholder="Поиск в LDAP (ФИО)" value="иванов">
+                <button onclick="searchLdap()">🔍 Поиск в LDAP</button>
+            </div>
+            <div class="flex-row">
+                <input type="email" id="newUserEmail" placeholder="Email" value="newuser@urfu.ru">
+                <input type="text" id="newUserFullName" placeholder="ФИО" value="Новый Пользователь">
+                <select id="newUserRole">
+                    <option value="user">Пользователь</option>
+                    <option value="admin">Администратор</option>
+                    <option value="super_admin">Суперадминистратор</option>
+                </select>
+                <button onclick="addUser()">➕ Добавить пользователя</button>
+            </div>
+            <div class="flex-row">
+                <input type="text" id="userId" placeholder="ID пользователя">
+                <select id="updateRole">
+                    <option value="user">Пользователь</option>
+                    <option value="admin">Администратор</option>
+                    <option value="super_admin">Суперадминистратор</option>
+                </select>
+                <button onclick="updateUserRole()">✏️ Сменить роль</button>
+                <button onclick="deleteUser()" class="danger">🗑️ Удалить пользователя</button>
+            </div>
+            <pre id="usersResult">Результат:</pre>
+        </div>
+    </div>
+    
+    <!-- ==================== ЛОГИ ==================== -->
+    <div id="logs" class="tab-content">
+        <div class="section">
+            <h2>📋 Логи действий (только суперадмин)</h2>
+            <div class="flex-row">
+                <button onclick="getAllLogs()">📋 Все логи</button>
+                <input type="text" id="logUserId" placeholder="ID пользователя">
+                <button onclick="getLogsByUser()">👤 Логи пользователя</button>
+                <input type="text" id="logTargetId" placeholder="ID объекта">
+                <input type="text" id="logTargetType" placeholder="Тип объекта (room, building)">
+                <button onclick="getLogsByTarget()">🎯 Логи по объекту</button>
+            </div>
+            <pre id="logsResult">Результат:</pre>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
