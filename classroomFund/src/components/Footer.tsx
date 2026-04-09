@@ -1,4 +1,4 @@
-import "../pages/planPage/styles.css"
+import "../pages/PlanManagerPage/styles.css";
 
 export const Footer = () => {
   return (

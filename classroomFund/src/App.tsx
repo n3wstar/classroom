@@ -1,9 +1,9 @@
 
 import './App.css'
-import { PlanPage } from './pages/planPage/planPage'
+import { PlanManagerPage} from './pages/PlanManagerPage/PlanManagerPage'
 
 function App() {
-  return <PlanPage/>
+  return <PlanManagerPage/>
 }
 
 export default App

@@ -1,4 +1,4 @@
-import "../pages/planPage/styles.css"
+import "../../src/pages/PlanManagerPage/styles.css";
 import searchIcon from "../assets/search-icon.svg";
 import rtfIcon from "../assets/urfu-logo.png";
 

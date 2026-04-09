@@ -1,0 +1,97 @@
+/* страница */
+.plan-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* центральная область */
+.plan-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+}
+
+/* если нет схемы */
+.empty-text {
+  color: #64748b;
+  font-size: 22px;
+}
+
+/* контейнер плана */
+.plan-container {
+  position: relative;
+  width: 100%;
+  max-width: 1500px;
+  aspect-ratio: 16/9;
+  margin: 0 auto;
+}
+
+/* изображение */
+.plan-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* зоны (по умолчанию — просмотр = серые) */
+.room {
+  position: absolute;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* hover */
+.room:hover {
+  background: rgba(100, 100, 100, 0.3);
+  border-color: gray;
+}
+
+/* редактор (переопределяем цвет) */
+.room.edit {
+  border: 1px solid blue;
+}
+
+.room.edit:hover {
+  background: rgba(0, 123, 255, 0.3);
+  border-color: blue;
+}
+
+/* модалка */
+.modal {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  z-index: 10;
+  border-radius: 6px;
+}
+
+/* нижняя панель */
+.plan-footer {
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  background: white;
+  border-top: 1px solid #ddd;
+}
+
+/* кнопка */
+.upload-btn, .cancel-btn, .save-btn {
+  background: #3b82f6;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.upload-btn:hover {
+  background: #2563eb;
+}
