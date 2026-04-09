@@ -1,0 +1,51 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* чтобы занять всю высоту окна */
+}
+
+.main {
+  flex: 1; /* главный контент растягивается между хедером и футером */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* центрируем по горизонтали */
+  justify-content: center; /* центрируем по вертикали */
+  
+}
+
+.plan-container {
+  position: relative;
+  width: 100%;           /* почти вся ширина экрана */
+  max-width: 1900px;    /* ограничение по большому экрану */
+  aspect-ratio: 16/9;
+  height: 100%;   /* сохраняем пропорции */
+  margin: 0 auto;       /* по центру горизонтально */
+}
+
+.plan-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;   /* масштабирование без обрезки */
+}
+
+.room {
+  position: absolute;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.room:hover {
+  background: rgba(0, 123, 255, 0.3);
+  border-color: blue;
+}
+
+.modal {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  z-index: 10;
+}
