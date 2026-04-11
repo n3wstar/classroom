@@ -1,30 +1,38 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { PlanEditor } from "../features/plan/planEditor";
 import { FooterButtons } from "../components/footerButtons";
-import type { Plan, Room } from "../types/plan.types";
+import type { Room } from "../types/plan.types";
 import { Header } from "../components/Header";
+import { usePlanStore } from "../store/planStore";
 
 export const PlanEditorPage = () => {
-  const { state } = useLocation();
+  
   const navigate = useNavigate();
 
-  const plan = state as Plan;
-  const [rooms, setRooms] = useState<Room[]>(plan.rooms || []);
+  const updatePlanRooms = usePlanStore((s) => s.updatePlanRooms);
+
+  const activePlanId = usePlanStore((s) => s.activePlanId);
+
+  const plan = usePlanStore((s) =>
+  s.plans.find((p) => p.id === activePlanId)
+);
+
+
+  const [rooms, setRooms] = useState<Room[]>([]);
+
+  if (!plan) return <div>Нет плана</div>;
 
   const handleSave = () => {
-  const updatedPlan = {
-    ...plan,
-    rooms,
+  updatePlanRooms(plan.id, rooms); // 🔥 сохраняем комнаты
+  navigate("/plan");
   };
 
-  navigate("/plan", { state: updatedPlan });
-};
 
   return (
     <div className="plan-page">
       <Header/>
-      <div className="plan-content">
+      <div className="plan-content editor">
         <PlanEditor image={plan.image} onChange={setRooms} />
       </div>
 

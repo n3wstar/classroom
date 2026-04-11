@@ -88,3 +88,7 @@ html, body, #root {
   gap: 5px;
   padding: 10px;
 }
+
+.plan-footer{
+  background-color: #EEEEEE;;
+}

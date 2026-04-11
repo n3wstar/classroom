@@ -8,11 +8,32 @@
 /* центральная область */
 .plan-content {
   flex: 1;
+  background: #f1f5f9;
+  padding: 14px;
+}
+
+.plan-content.list {
+  display: block;
+}
+
+.plan-content.center {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f1f5f9;
+}
+
+.plan-content.editor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plan-title {
+  font-size: 14px;
+  text-align: center;
+  border-top: 1px solid #eee;
+  color: #000000;
+  margin: 0;
 }
 
 /* если нет схемы */
