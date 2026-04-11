@@ -1,9 +1,10 @@
 
 import './App.css'
-import { PlanManagerPage} from './pages/PlanManagerPage/PlanManagerPage'
+import { RouterProvider } from 'react-router-dom'
+import { router } from './router'
 
 function App() {
-  return <PlanManagerPage/>
+  return <RouterProvider router={router}/>;
 }
 
 export default App

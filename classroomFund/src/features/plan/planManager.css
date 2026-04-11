@@ -83,7 +83,7 @@
 }
 
 /* кнопка */
-.upload-btn, .cancel-btn, .save-btn {
+.upload-btn, .cancel-btn, .save-btn, .back-btn {
   background: #3b82f6;
   color: white;
   padding: 12px 20px;

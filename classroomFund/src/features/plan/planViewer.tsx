@@ -22,7 +22,9 @@ export const PlanViewer = ({ plan }: Props) => {
               top: `${r.y * 100}%`,
               width: `${r.w * 100}%`,
               height: `${r.h * 100}%`,
-              background: "rgba(0,123,255,0.3)",
+              background: "rgba(164, 162, 162, 0.3)",
+              cursor: "pointer",
+              zIndex: 10,
             }}
             onClick={() => alert("Аудитория " + r.id)}
           />

@@ -1,15 +1,16 @@
 import { useRef, useState } from "react";
 import type { Room } from "../../types/plan.types";
 import "../plan/planManager.css";
+import trashIcon from "../../assets/trashIcon.png";
 
 
 
 type Props = {
   image: string;
-  onSave: (rooms: Room[]) => void;
+  onChange: (rooms: Room[]) => void;
 };
 
-export const PlanEditor = ({ image, onSave }: Props) => {
+export const PlanEditor = ({ image, onChange }: Props) => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [drawing, setDrawing] = useState(false);
   const [start, setStart] = useState({ x: 0, y: 0 });
@@ -62,15 +63,17 @@ export const PlanEditor = ({ image, onSave }: Props) => {
 
   // 🔹 завершение
   const handleMouseUp = () => {
-    if (current) {
-      setRooms([...rooms, normalizeRect(current)]);
-    }
+  if (current) {
+    const updated = [...rooms, normalizeRect(current)];
+    setRooms(updated);
+    onChange(updated); 
+  }
 
-    setDrawing(false);
-    setCurrent(null);
-  };
+  setDrawing(false);
+  setCurrent(null);
+};
 
-  // 🔥 фикс отрицательных размеров (очень важно)
+  
   const normalizeRect = (r: Room): Room => {
     return {
       ...r,
@@ -81,14 +84,15 @@ export const PlanEditor = ({ image, onSave }: Props) => {
     };
   };
 
-  // 🔹 удалить последнюю зону
-  const undo = () => {
-    setRooms(rooms.slice(0, -1));
-  };
+ const deleteRoom = (id: string) => {
+  const updated = rooms.filter((r) => r.id !== id);
+  setRooms(updated);
+  onChange(updated);
+};
 
   return (
     <div>
-      <h3>Разметка плана</h3>
+      <h3>Редактор схем</h3>
 
 
       {/* контейнер */}
@@ -109,20 +113,37 @@ export const PlanEditor = ({ image, onSave }: Props) => {
 
         {/* сохранённые зоны */}
         {rooms.map((room) => (
-          <div
-            key={room.id}
-            className="room edit"
-            style={{
-              position: "absolute",
-              left: `${room.x * 100}%`,
-              top: `${room.y * 100}%`,
-              width: `${room.w * 100}%`,
-              height: `${room.h * 100}%`,
-              background: "rgba(0,123,255,0.3)",
-              border: "1px solid blue",
-            }}
-          />
-        ))}
+  <div
+    key={room.id}
+    className="room edit"
+    onClick={() => deleteRoom(room.id)}
+    onMouseDown={(e) => e.stopPropagation()}
+    style={{
+      position: "absolute",
+      left: `${room.x * 100}%`,
+      top: `${room.y * 100}%`,
+      width: `${room.w * 100}%`,
+      height: `${room.h * 100}%`,
+      background: "rgba(164, 162, 162, 0.3)",
+      border: "1px solid blue",
+      cursor: "pointer",
+    }}
+  >
+    <img
+      src={trashIcon}
+      alt="delete"
+      style={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 18,
+        height: 20,
+        pointerEvents: "none", // чтобы клик проходил в div
+      }}
+    />
+  </div>
+))}
 
         {/* текущая зона */}
         {current && (
@@ -137,17 +158,6 @@ export const PlanEditor = ({ image, onSave }: Props) => {
             }}
           />
         )}
-      </div>
-      {/* кнопки */}
-      <div className="plan-footer">
-        <label className="save-btn">
-          Сохранить план
-          <button onClick={() => onSave(rooms)}  hidden/>
-        </label>
-        <label className="cancel-btn">
-         Отменить   
-        <button onClick={undo} hidden/>
-        </label>
       </div>
     </div>
   );
