@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import type { Room } from "../../types/plan.types";
-import "../plan/planManager.css";
+import "../plan/styles/planManager.css";
 import trashIcon from "../../assets/Icon.png";
 
 

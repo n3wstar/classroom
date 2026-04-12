@@ -34,24 +34,23 @@ const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
   navigate("/editor");   
 };
 
-
   return (
     <div className="plan-page">
       <Header />
 
-      <div className="plan-content list">
-        {plans.length === 0 ? (
-          <h2>Схема этажа не загружена</h2>
-        ) : (
-          <PlanList
-            plans={plans}
-            onSelect={(p) => {setActivePlan(p.id);
-            navigate("/plan")
-            }
-            }
-          />
-        )}
-      </div>
+      <div className={`plan-content ${plans.length === 0 ? "center" : "list"}`}>
+  {plans.length === 0 ? (
+    <h2 className="plan-msg">Схема этажа не загружена</h2>
+  ) : (
+    <PlanList
+      plans={plans}
+      onSelect={(p) => {
+        setActivePlan(p.id);
+        navigate("/plan");
+      }}
+    />
+  )}
+</div>
 
       <FooterButtons mode="list" onUpload={handleUpload} />
     </div>

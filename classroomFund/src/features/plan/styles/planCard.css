@@ -1,0 +1,120 @@
+.plan-layout {
+  flex: 1;
+  display: flex;
+  position: relative;
+}
+
+.viewer-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+/* сам план */
+.plan-canvas {
+  position: relative;
+  width: 800px;
+}
+
+/* правая панель */
+.viewer-sidebar {
+  position: absolute;  
+  width: 500px;
+  height: 100%;
+  right: 0;
+  top: 0; 
+
+  background: #EEEEEE;
+  border-left: 1px solid #ddd;
+  padding: 10px;
+  margin: 0;
+
+  overflow-y: auto;
+}
+
+.room:hover {
+  background: rgba(0,0,0,0.3);
+}
+
+.room-card{
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.room-card button{
+  font-size: 24px;
+}
+
+.card-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.icon-btn{
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+}
+
+.icons{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.action-btn.active {
+  background: #CCCCCC;
+  font-weight: 600;
+}
+
+.card-actions {
+  display: flex;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  background: #e6e6e6;
+  border-radius: 6px;
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 5px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.upload-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.upload-block input {
+  padding: 6px;
+}
+
