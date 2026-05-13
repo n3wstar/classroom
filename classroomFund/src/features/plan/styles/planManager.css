@@ -8,7 +8,7 @@
 /* центральная область */
 .plan-content {
   flex: 1;
-  background: #f1f5f9;
+  background: #F8F9FA;
 }
 
 .plan-content.list {
@@ -33,6 +33,8 @@
   border-top: 1px solid #eee;
   color: #000000;
   margin: 0;
+  background-color: #FFFFFF;
+  
 }
 
 /* если нет схемы */

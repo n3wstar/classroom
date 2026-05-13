@@ -1,33 +1,102 @@
-import type { Plan, Room } from "../../types/plan.types";
+
+import "../plan/styles/planCard.css";
+
+import type {
+  Plan,
+  Room,
+  Schema,
+} from "../../types/plan.types";
+
 import "../plan/styles/planCard.css";
 
 type Props = {
   plan: Plan;
+
+  schema: Schema;
+
   onRoomClick: (room: Room) => void;
 };
 
-export const PlanViewer = ({ plan, onRoomClick }: Props) => {
+export const PlanViewer = ({
+  plan,
+  schema,
+  onRoomClick,
+}: Props) => {
   return (
-    <div>
-      <h3>{plan.name}</h3>
+    <div
+      style={{
+        width: "100%",
+      }}
+    >
+      <h2
+        style={{
+          textAlign: "center",
+          marginBottom: 24,
+        }}
+      >
+        {plan.name}
+      </h2>
 
-      <div className="plan-canvas">
-        <img src={plan.image} style={{ width: "100%" }} />
+      <div
+        className="plan-canvas"
+        style={{
+          position: "relative",
+          width: "100%",
+        }}
+      >
 
-        {plan.rooms.map((r) => (
+        {/* СХЕМА */}
+        {schema.image ? (
+          <img
+            src={schema.image}
+            style={{
+              width: "100%",
+              display: "block",
+              borderRadius: 16,
+            }}
+          />
+        ) : (
           <div
-            key={r.id}
+            style={{
+              height: 700,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "#f5f5f5",
+              borderRadius: 16,
+              color: "#999",
+              fontSize: 18,
+            }}
+          >
+            Схема не загружена
+          </div>
+        )}
+
+        {/* КОМНАТЫ */}
+        {schema.rooms.map((room) => (
+          <div
+            key={room.id}
             className="room"
+            onClick={() => onRoomClick(room)}
             style={{
               position: "absolute",
-              left: `${r.x * 100}%`,
-              top: `${r.y * 100}%`,
-              width: `${r.w * 100}%`,
-              height: `${r.h * 100}%`,
-              background: "rgba(164, 162, 162, 0.3)",
+
+              left: `${room.x * 100}%`,
+              top: `${room.y * 100}%`,
+
+              width: `${room.w * 100}%`,
+              height: `${room.h * 100}%`,
+
+              background:
+                "rgba(37, 99, 235, 0.25)",
+
+              border:
+                "2px solid rgba(37, 99, 235, 0.8)",
+
+              borderRadius: 8,
+
               cursor: "pointer",
             }}
-            onClick={() => onRoomClick(r)}
           />
         ))}
       </div>

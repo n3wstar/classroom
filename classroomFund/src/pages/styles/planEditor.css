@@ -1,0 +1,61 @@
+.editor-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f3f3f3;
+}
+
+.editor-content {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-top {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.editor-top h2 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.editor-top p {
+  color: #666;
+}
+
+.editor-footer {
+  height: 80px;
+  background: white;
+  border-top: 1px solid #ddd;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+.footer-btn.save {
+  background: #2f6fed;
+  color: white;
+}
+
+.footer-btn.cancel {
+  background: white;
+  border: 1px solid #ccc;
+}
+
+.footer-btn:hover {
+  opacity: 0.9;
+}

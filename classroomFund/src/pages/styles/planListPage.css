@@ -1,0 +1,132 @@
+
+
+
+.plan-page-title {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 40px;
+  font-weight: 700;
+  color: #2d2d2d;
+}
+
+.plan-toolbar {
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.empty-state {
+  width: 100%;
+  height: 60vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #888;
+  font-size: 22px;
+}
+
+.viewer-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+  background-color: #F8F9FA;
+}
+
+.schema-container {
+  position: relative;
+
+  width: 100%;
+  max-width: 1100px;
+
+  height: calc(100vh - 220px);
+
+  border-radius: 24px;
+  overflow: hidden;
+
+  background: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: transform 0.15s ease;
+}
+
+.schema-image {
+  max-width: 100%;
+  max-height: 100%;
+
+  object-fit: contain;
+
+  display: block;
+}
+
+.viewer-center {
+  width: 100%;
+  max-width: 1000px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.empty-schema {
+  color: #777;
+  font-size: 18px;
+}
+
+.floors-bar {
+  display: flex;
+
+  background: #E0E0E0;
+  border-radius: 999px;
+
+  padding: 4px;
+  gap: 0;
+  width: fit-content;
+  margin-bottom: 26px;
+}
+
+.floor-btn {
+  width: 44px;
+  height: 36px;
+
+  border: none;
+  background: transparent;
+
+  border-radius: 999px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition: 0.2s;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.floor-btn.active {
+  background: white;
+  color: #1976D2;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.floor-btn:hover {
+  background: #f3f3f3;
+}
+
+.floor-btn.active {
+  background: #1976D2;
+  color: white;
+  border-color: #1976D2;
+}

@@ -11,6 +11,6 @@ export const router = createBrowserRouter([
     path:"/editor", element:<PlanEditorPage/>
 },
 {
-    path:"/plan", element:<PlanViewerPage/>,
+    path:"/viewer", element:<PlanViewerPage/>,
 }
 ]);

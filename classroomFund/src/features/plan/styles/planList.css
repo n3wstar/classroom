@@ -1,0 +1,17 @@
+
+.page-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.add-btn {
+  margin-bottom: 20px;
+  margin-left:50px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 15.5px 24px;
+  border-radius: 999px;
+  cursor: pointer;
+  width: 220px;
+}

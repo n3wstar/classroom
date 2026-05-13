@@ -1,0 +1,69 @@
+.upload-link {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px; 
+
+  cursor: pointer;
+  color: #000;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.upload-link:hover {
+  text-decoration: none;
+}
+
+.schema-row {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.floor-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 140px;
+}
+
+.floor-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+.floor-circle input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  text-align: center;
+  font-weight: 600;
+  outline: none;
+}
+
+.file-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 13px;
+  color: #555;
+}
+
+.file-remove {
+  border: none;
+  background: none;
+  cursor: pointer;
+
+  font-size: 18px;
+  line-height: 1;
+  padding: 0;
+}

@@ -18,7 +18,7 @@ html, body, #root {
   height: 100px;
   justify-content: space-between;
   padding: 10px 20px;
-  background: #EEEEEE;
+  background: #FFFFFF;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
@@ -63,6 +63,7 @@ html, body, #root {
   max-height: 100%;  /* на случай адаптивности */
   width: auto;       /* сохраняем пропорции */
   display: block;
+  cursor: pointer;
 }
 
 .main-planpage {
@@ -75,20 +76,7 @@ html, body, #root {
   gap: 20px;             
 }
 
-.floorButton{
-    height: 50px;
-    width: 50px;
-    font-size: 20px;
-    background-color: #E6E6E6;
-}
-
-.footer {
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-  padding: 10px;
-}
-
-.plan-footer{
-  background-color: #EEEEEE;;
+h1{
+  font-size: 28px;
+  font-weight: 700;
 }

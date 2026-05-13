@@ -1,24 +1,38 @@
 import { useRef, useState } from "react";
 import type { Room } from "../../types/plan.types";
+
 import "../plan/styles/planManager.css";
 import trashIcon from "../../assets/Icon.png";
-
-
 
 type Props = {
   image: string;
   onChange: (rooms: Room[]) => void;
+  initialRooms?: Room[];
 };
 
-export const PlanEditor = ({ image, onChange }: Props) => {
-  const [rooms, setRooms] = useState<Room[]>([]);
-  const [drawing, setDrawing] = useState(false);
-  const [start, setStart] = useState({ x: 0, y: 0 });
-  const [current, setCurrent] = useState<Room | null>(null);
-
+export const PlanEditor = ({
+  image,
+  onChange,
+  initialRooms = [],
+}: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // 🔹 перевод координат мыши в %
+  // уже сохранённые комнаты
+  const [rooms, setRooms] = useState<Room[]>(initialRooms);
+
+  // рисуем ли сейчас
+  const [drawing, setDrawing] = useState(false);
+
+  // точка начала
+  const [start, setStart] = useState({
+    x: 0,
+    y: 0,
+  });
+
+  // текущий прямоугольник
+  const [current, setCurrent] = useState<Room | null>(null);
+
+  // перевод координат мыши в %
   const getCoords = (e: React.MouseEvent) => {
     const rect = containerRef.current!.getBoundingClientRect();
 
@@ -28,11 +42,12 @@ export const PlanEditor = ({ image, onChange }: Props) => {
     };
   };
 
-  // 🔹 начало рисования
+  // начало рисования
   const handleMouseDown = (e: React.MouseEvent) => {
     const { x, y } = getCoords(e);
 
     setDrawing(true);
+
     setStart({ x, y });
 
     setCurrent({
@@ -44,7 +59,7 @@ export const PlanEditor = ({ image, onChange }: Props) => {
     });
   };
 
-  // 🔹 процесс рисования
+  // процесс рисования
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!drawing) return;
 
@@ -61,19 +76,7 @@ export const PlanEditor = ({ image, onChange }: Props) => {
     );
   };
 
-  // 🔹 завершение
-  const handleMouseUp = () => {
-  if (current) {
-    const updated = [...rooms, normalizeRect(current)];
-    setRooms(updated);
-    onChange(updated); 
-  }
-
-  setDrawing(false);
-  setCurrent(null);
-};
-
-  
+  // исправление отрицательных размеров
   const normalizeRect = (r: Room): Room => {
     return {
       ...r,
@@ -84,77 +87,79 @@ export const PlanEditor = ({ image, onChange }: Props) => {
     };
   };
 
- const deleteRoom = (id: string) => {
-  const updated = rooms.filter((r) => r.id !== id);
-  setRooms(updated);
-  onChange(updated);
-};
+  // завершение рисования
+  const handleMouseUp = () => {
+    if (!current) return;
+
+    const normalized = normalizeRect(current);
+
+    const updated = [...rooms, normalized];
+
+    setRooms(updated);
+
+    onChange(updated);
+
+    setDrawing(false);
+
+    setCurrent(null);
+  };
+
+  // удаление области
+  const deleteRoom = (id: string) => {
+    const updated = rooms.filter((r) => r.id !== id);
+
+    setRooms(updated);
+
+    onChange(updated);
+  };
 
   return (
-    <div>
-      <h3>Редактор схем</h3>
-
-
-      {/* контейнер */}
+    <div className="editor-wrapper">
       <div
         ref={containerRef}
-        style={{
-          position: "relative",
-          width: 800,
-          border: "1px solid #ccc",
-          cursor: "crosshair",
-        }}
+        className="editor-plan"
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
       >
-        {/* картинка */}
-        <img src={image} style={{ width: "100%", display: "block" }} />
+        {/* схема */}
+        <img
+          src={image}
+          alt="plan"
+          className="editor-image"
+        />
 
         {/* сохранённые зоны */}
         {rooms.map((room) => (
-  <div
-    key={room.id}
-    className="room edit"
-    onClick={() => deleteRoom(room.id)}
-    onMouseDown={(e) => e.stopPropagation()}
-    style={{
-      position: "absolute",
-      left: `${room.x * 100}%`,
-      top: `${room.y * 100}%`,
-      width: `${room.w * 100}%`,
-      height: `${room.h * 100}%`,
-      background: "rgba(164, 162, 162, 0.3)",
-      border: "1px solid blue",
-      cursor: "pointer",
-    }}
-  >
-    <img
-      src={trashIcon}
-      alt="delete"
-      style={{
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        width: 18,
-        height: 20,
-        pointerEvents: "none", // чтобы клик проходил в div
-      }}
-    />
-  </div>
-))}
+          <div
+            key={room.id}
+            className="editor-room"
+            onClick={() => deleteRoom(room.id)}
+            onMouseDown={(e) => e.stopPropagation()}
+            style={{
+              left: `${room.x * 100}%`,
+              top: `${room.y * 100}%`,
+              width: `${room.w * 100}%`,
+              height: `${room.h * 100}%`,
+            }}
+          >
+            <img
+              src={trashIcon}
+              alt="delete"
+              className="delete-icon"
+            />
+          </div>
+        ))}
 
-        {/* текущая зона */}
+        {/* текущая рисуемая зона */}
         {current && (
           <div
+            className="current-room"
             style={{
-              position: "absolute",
               left: `${current.x * 100}%`,
               top: `${current.y * 100}%`,
               width: `${current.w * 100}%`,
               height: `${current.h * 100}%`,
-              border: "2px dashed blue",
             }}
           />
         )}
