@@ -1,40 +1,31 @@
-import { useRef, useState } from "react";
-import type { Room } from "../../types/plan.types";
 
-import "../plan/styles/planManager.css";
+import "../../pages/styles/planEditor.css";
+
+import { useRef, useState } from "react";
+import type { ClickableArea, Point } from "../../types/plan.types";
 import trashIcon from "../../assets/Icon.png";
 
 type Props = {
   image: string;
-  onChange: (rooms: Room[]) => void;
-  initialRooms?: Room[];
+  areas: ClickableArea[];
+  onChange: (areas: ClickableArea[]) => void;
+  drawingMode: boolean;
 };
 
 export const PlanEditor = ({
   image,
+  areas,
   onChange,
-  initialRooms = [],
+  drawingMode,
 }: Props) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
+  const [current, setCurrent] = useState<ClickableArea | null>(null);
 
-  // уже сохранённые комнаты
-  const [rooms, setRooms] = useState<Room[]>(initialRooms);
 
-  // рисуем ли сейчас
-  const [drawing, setDrawing] = useState(false);
+  const getPoint = (e: React.MouseEvent): Point => {
+    if (!ref.current) return { x: 0, y: 0 };
 
-  // точка начала
-  const [start, setStart] = useState({
-    x: 0,
-    y: 0,
-  });
-
-  // текущий прямоугольник
-  const [current, setCurrent] = useState<Room | null>(null);
-
-  // перевод координат мыши в %
-  const getCoords = (e: React.MouseEvent) => {
-    const rect = containerRef.current!.getBoundingClientRect();
+    const rect = ref.current.getBoundingClientRect();
 
     return {
       x: (e.clientX - rect.left) / rect.width,
@@ -42,127 +33,122 @@ export const PlanEditor = ({
     };
   };
 
-  // начало рисования
-  const handleMouseDown = (e: React.MouseEvent) => {
-    const { x, y } = getCoords(e);
+  const isNearFirst = (p: Point, first: Point) => {
+    return Math.abs(first.x - p.x) < 0.02 && Math.abs(first.y - p.y) < 0.02;
+  };
 
-    setDrawing(true);
+  const handleClick = (e: React.MouseEvent) => {
+    if (!drawingMode) return;
 
-    setStart({ x, y });
+    const p = getPoint(e);
 
-    setCurrent({
-      id: Date.now().toString(),
-      x,
-      y,
-      w: 0,
-      h: 0,
+    setCurrent((prev) => {
+      if (!prev) {
+        return {
+          id: Date.now().toString(),
+          points: [p],
+        };
+      }
+
+      const first = prev.points[0];
+
+      // замыкание
+      if (prev.points.length >= 3 && isNearFirst(p, first)) {
+        const closed: ClickableArea = {
+          ...prev,
+          points: [...prev.points, first],
+        };
+
+        const updated = [...areas, closed];
+
+        setTimeout(() => onChange(updated), 0);
+
+        return null;
+      }
+
+      return {
+        ...prev,
+        points: [...prev.points, p],
+      };
     });
   };
 
-  // процесс рисования
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!drawing) return;
-
-    const { x, y } = getCoords(e);
-
-    setCurrent((prev) =>
-      prev
-        ? {
-            ...prev,
-            w: x - start.x,
-            h: y - start.y,
-          }
-        : null
-    );
-  };
-
-  // исправление отрицательных размеров
-  const normalizeRect = (r: Room): Room => {
-    return {
-      ...r,
-      x: r.w < 0 ? r.x + r.w : r.x,
-      y: r.h < 0 ? r.y + r.h : r.y,
-      w: Math.abs(r.w),
-      h: Math.abs(r.h),
-    };
-  };
-
-  // завершение рисования
-  const handleMouseUp = () => {
-    if (!current) return;
-
-    const normalized = normalizeRect(current);
-
-    const updated = [...rooms, normalized];
-
-    setRooms(updated);
-
-    onChange(updated);
-
-    setDrawing(false);
-
-    setCurrent(null);
-  };
-
-  // удаление области
-  const deleteRoom = (id: string) => {
-    const updated = rooms.filter((r) => r.id !== id);
-
-    setRooms(updated);
-
-    onChange(updated);
-  };
 
   return (
     <div className="editor-wrapper">
-      <div
-        ref={containerRef}
-        className="editor-plan"
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-      >
-        {/* схема */}
-        <img
-          src={image}
-          alt="plan"
-          className="editor-image"
-        />
+      <div className="plan-canvas" ref={ref} onClick={handleClick}>
+        <img src={image} className="plan-image" />
 
-        {/* сохранённые зоны */}
-        {rooms.map((room) => (
-          <div
-            key={room.id}
-            className="editor-room"
-            onClick={() => deleteRoom(room.id)}
-            onMouseDown={(e) => e.stopPropagation()}
-            style={{
-              left: `${room.x * 100}%`,
-              top: `${room.y * 100}%`,
-              width: `${room.w * 100}%`,
-              height: `${room.h * 100}%`,
-            }}
-          >
-            <img
-              src={trashIcon}
-              alt="delete"
-              className="delete-icon"
+        <svg
+          className="plan-overlay"
+          viewBox="0 0 1 1"
+          preserveAspectRatio="none"
+        >
+          {/* AREAS */}
+          {areas.map((area) => {
+
+            const centerX =
+              area.points.reduce((sum, p) => sum + p.x, 0) / area.points.length;
+
+            const centerY =
+              area.points.reduce((sum, p) => sum + p.y, 0) / area.points.length;
+
+            const size = 0.015;
+
+            return (
+              <g key={area.id}>
+                <polygon
+                  points={area.points.map((p) => `${p.x},${p.y}`).join(" ")}
+                  fill="#FFE082"
+                  opacity="0.5"
+                  stroke="#FFC107"
+                  strokeWidth="0.003"
+                  cursor="pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onChange(areas.filter((a) => a.id !== area.id));
+                  }}
+                />
+
+                <image
+                  href={trashIcon}
+                  x={centerX - size / 2}
+                  y={centerY - size / 2}
+                  width={size}
+                  height={size}
+                  preserveAspectRatio="xMidYMid meet"
+                  style={{
+                    cursor: "pointer",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onChange(areas.filter((a) => a.id !== area.id));
+                  }}
+                />
+              </g>
+            );
+          })}
+
+          {/* текущая линия */}
+          {current && (
+            <polyline
+              points={current.points.map((p) => `${p.x},${p.y}`).join(" ")}
+              fill="none"
+              stroke="#FFC107"
+              strokeWidth="0.003"
             />
-          </div>
-        ))}
+          )}
 
-        {/* текущая рисуемая зона */}
-        {current && (
-          <div
-            className="current-room"
-            style={{
-              left: `${current.x * 100}%`,
-              top: `${current.y * 100}%`,
-              width: `${current.w * 100}%`,
-              height: `${current.h * 100}%`,
-            }}
-          />
-        )}
+          {/* первая точка */}
+          {current?.points?.[0] && (
+            <circle
+              cx={current.points[0].x}
+              cy={current.points[0].y}
+              r={0.002}
+              fill="rgba(0,255,0,0.2)"
+            />
+          )}
+        </svg>
       </div>
     </div>
   );

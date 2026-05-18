@@ -1,105 +1,44 @@
 
-import "../plan/styles/planCard.css";
-
 import type {
+  ClickableArea,
   Plan,
-  Room,
   Schema,
 } from "../../types/plan.types";
 
-import "../plan/styles/planCard.css";
+import "../../pages/styles/planEditor.css";
 
 type Props = {
   plan: Plan;
-
   schema: Schema;
-
-  onRoomClick: (room: Room) => void;
+  onRoomClick: (area: ClickableArea) => void;
 };
 
-export const PlanViewer = ({
-  plan,
-  schema,
-  onRoomClick,
-}: Props) => {
+export const PlanViewer = ({ schema, onRoomClick }: Props) => {
   return (
-    <div
-      style={{
-        width: "100%",
-      }}
-    >
-      <h2
-        style={{
-          textAlign: "center",
-          marginBottom: 24,
-        }}
+    <div className="plan-canvas">
+
+      <img
+        src={schema.image}
+        className="plan-image"
+      />
+
+      <svg
+        className="plan-overlay"
+        viewBox="0 0 1 1"
+        preserveAspectRatio="none"
       >
-        {plan.name}
-      </h2>
-
-      <div
-        className="plan-canvas"
-        style={{
-          position: "relative",
-          width: "100%",
-        }}
-      >
-
-        {/* СХЕМА */}
-        {schema.image ? (
-          <img
-            src={schema.image}
-            style={{
-              width: "100%",
-              display: "block",
-              borderRadius: 16,
-            }}
-          />
-        ) : (
-          <div
-            style={{
-              height: 700,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "#f5f5f5",
-              borderRadius: 16,
-              color: "#999",
-              fontSize: 18,
-            }}
-          >
-            Схема не загружена
-          </div>
-        )}
-
-        {/* КОМНАТЫ */}
-        {schema.rooms.map((room) => (
-          <div
-            key={room.id}
-            className="room"
-            onClick={() => onRoomClick(room)}
-            style={{
-              position: "absolute",
-
-              left: `${room.x * 100}%`,
-              top: `${room.y * 100}%`,
-
-              width: `${room.w * 100}%`,
-              height: `${room.h * 100}%`,
-
-              background:
-                "rgba(37, 99, 235, 0.25)",
-
-              border:
-                "2px solid rgba(37, 99, 235, 0.8)",
-
-              borderRadius: 8,
-
-              cursor: "pointer",
-            }}
+        {schema.areas?.map((area) => (
+          <polygon
+            key={area.id}
+            points={area.points.map((p) => `${p.x},${p.y}`).join(" ")}
+            fill="#FFE082"
+            opacity="0.5"
+            style={{ cursor: "pointer" }}
+            onClick={() => onRoomClick(area)}
           />
         ))}
-      </div>
+      </svg>
+
     </div>
   );
 };

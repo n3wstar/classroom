@@ -11,12 +11,24 @@ export type Plan = {
   name: string;
   previewImage: string;
   previewImageName: string; 
-  schemas: Schema[]; // пока пустые
+  schemas: Schema[]; 
 };
 
 export type Schema = {
   id: string;
   floor: number;
   image: string;
-  rooms: Room[];
+  imageName?: string;
+  areas: ClickableArea[]
+};
+
+export type ClickableArea = {
+  id: string;
+  points: Point[];
+  roomId?: string;
+};
+
+export type Point = {
+  x: number;
+  y: number;
 };

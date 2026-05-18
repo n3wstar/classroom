@@ -8,30 +8,36 @@
   color: #000;
   font-size: 16px;
   text-decoration: none;
+
+  background: none;
+  border: none;
 }
 
 .upload-link:hover {
   text-decoration: none;
 }
 
-.schema-row {
-  display: flex;
+
+
+.field-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
   align-items: center;
-  gap: 26px;
+  gap: 16px;
 }
 
-.floor-box {
-  display: flex;
+.schema-row {
+  display: grid;
+  grid-template-columns: 140px 80px 1fr;
   align-items: center;
-  gap: 12px;
-  min-width: 140px;
+  gap: 16px;
 }
 
 .floor-circle {
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  border: 1px solid #ccc;
+  border: 1.5px solid #757575;
 
   display: flex;
   align-items: center;
@@ -45,7 +51,8 @@
   height: 100%;
   border: none;
   text-align: center;
-  font-weight: 600;
+  color:#212121;
+  font-size: 16px;
   outline: none;
 }
 

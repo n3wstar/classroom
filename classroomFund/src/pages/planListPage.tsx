@@ -44,7 +44,7 @@ export const PlanListPage = () => {
           id: `${Date.now()}-${i}`,
           floor: i + 1,
           image: "",
-          rooms: [],
+          areas: [],
         })
       ),
     };

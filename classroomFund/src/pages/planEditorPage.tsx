@@ -1,66 +1,143 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { Header } from "../components/Header";
-import { PlanEditor } from "../features/plan/planEditor";
-import type { Room } from "../types/plan.types";
-import { usePlanStore } from "../store/planStore";
 
+import { useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Header } from "../components/Header";
+import { usePlanStore } from "../store/planStore";
+import type { ClickableArea } from "../types/plan.types";
+import { PlanEditor } from "../features/plan/planEditor";
+import plusIcon from "../assets/plus.png";
+import xIcon from "../assets/x-icon.png";
+import saveIcon from "../assets/galochka.png";
+import trashIcon from "../assets/Icon.png";
+import downloadIcon from "../assets/download-icon.png";
 import "../pages/styles/planEditor.css";
+
 
 export const PlanEditorPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const activePlanId = usePlanStore((s) => s.activePlanId);
+  const { planId, schemaId } = location.state as {
+    planId: string;
+    schemaId: string;
+  };
 
   const plan = usePlanStore((s) =>
-    s.plans.find((p) => p.id === activePlanId)
+    s.plans.find((p) => p.id === planId)
   );
 
-  const updatePlanRooms = usePlanStore((s) => s.updatePlanRooms);
-
-  const [rooms, setRooms] = useState<Room[]>(plan?.rooms || []);
-
-  if (!plan) {
-    return <div>План не найден</div>;
-  }
-
-  const handleSave = () => {
-    updatePlanRooms(plan.id, rooms);
-    navigate("/plan");
+  const clearSchema = () => {
+    setImage("");
+    setImageName("");
+    setAreas([]);
   };
+
+  const updateSchema = usePlanStore((s) => s.updateSchema);
+
+  const schema = plan?.schemas.find((s) => s.id === schemaId);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [image, setImage] = useState(schema?.image || "");
+  const [imageName, setImageName] = useState(schema?.imageName || "");
+  const [areas, setAreas] = useState<ClickableArea[]>(schema?.areas || []);
+
+  const [drawingMode, setDrawingMode] = useState(false);
+
+
+
+  if (!plan) return <div>План не найден</div>;
+  
 
   return (
     <div className="editor-page">
       <Header />
 
       <div className="editor-content">
-        <div className="editor-top">
-          <h2>Редактор схем</h2>
-          <p>{plan.name}</p>
-        </div>
 
-        <PlanEditor
-          image={plan.image}
-          onChange={setRooms}
-          initialRooms={plan.rooms}
-        />
+        <div className="editor-top">
+          <h2 className="editor-scheme">Редактор схем</h2>
+          <p className="editor-title">
+            {imageName || ""}
+          </p>
+        </div>
+        {!image ? (
+          <div className="empty-editor">
+            Схема этажа не загружена
+          </div>
+        ) : (
+          <div className="plan-canvas">
+            <PlanEditor
+              image={image}
+              areas={areas}
+              onChange={setAreas}
+              drawingMode={drawingMode}
+            />
+          </div>
+        )}
       </div>
 
       <div className="editor-footer">
+
         <button
-          className="footer-btn cancel"
-          onClick={() => navigate("/")}
+          className="footer-btn upload-btn"
+          onClick={() => fileInputRef.current?.click()}
         >
-          Отменить
+          <img src={downloadIcon} alt="" />
+          Загрузить схему
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          hidden
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+
+            setImage(URL.createObjectURL(file));
+            setImageName(file.name);
+          }}
+        />
+
+        <button
+          className="footer-btn delete-btn"
+          onClick={clearSchema}
+        >
+          <img src={trashIcon} alt="" />
+          Удалить схему
         </button>
 
         <button
-          className="footer-btn save"
-          onClick={handleSave}
+          className={`footer-btn add-button ${drawingMode ? "active" : ""}`}
+          onClick={() => setDrawingMode((p) => !p)}
         >
+          <img src={plusIcon}></img>
+          Добавить область
+        </button>
+
+        <button
+          className="footer-btn save-button"
+          onClick={() => {
+            updateSchema(planId, schemaId, {
+              image,
+              imageName,
+              areas,
+            });
+
+            navigate(-1);
+          }}
+        >
+          <img src={saveIcon} alt="" />
           Сохранить
         </button>
+
+        <button
+          className="footer-btn cancel-btn"
+          onClick={() => navigate(-1)}
+        >
+          <img src={xIcon} alt="" />
+          Отменить
+        </button>
       </div>
-    </div>
+    </div >
   );
 };

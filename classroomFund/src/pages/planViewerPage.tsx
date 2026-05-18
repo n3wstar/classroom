@@ -3,6 +3,8 @@ import { PlanViewer } from "../features/plan/planViewer";
 import { useState } from "react";
 import { Header } from "../components/Header";
 import { usePlanStore } from "../store/planStore";
+import "../features/plan/styles/planManager.css";
+import "../pages/styles/planViewerPage.css";
 
 export const PlanViewerPage = () => {
   const activePlanId = usePlanStore((s) => s.activePlanId);
@@ -18,25 +20,31 @@ export const PlanViewerPage = () => {
   }
 
   const currentSchema = plan.schemas[activeFloor];
+  const isSchemaEmpty = !currentSchema?.image;
 
   return (
     <div className="plan-page">
-      <Header />
+      <Header showSearch />
 
       <div className="viewer-wrapper">
 
-        {/* SCHEMA */}
         <div className="viewer-center">
+        <p className="viewer-title">{plan.name}</p>
 
-          <PlanViewer
-            plan={plan}
-            schema={currentSchema}
-            onRoomClick={(room) => {
-              console.log(room);
-            }}
-          />
+          {isSchemaEmpty ? (
+            <div className="empty-viewer">
+              Схема этажа не загружена
+            </div>
+          ) : (
+            <PlanViewer
+              plan={plan}
+              schema={currentSchema}
+              onRoomClick={(room) => {
+                console.log(room);
+              }}
+            />
+          )}
 
-          {/* FLOORS */}
           <div className="floors-bar">
             {plan.schemas.map((schema, index) => (
               <button

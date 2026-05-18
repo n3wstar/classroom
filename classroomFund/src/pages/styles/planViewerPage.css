@@ -1,33 +1,9 @@
-.zoom-control {
-  position: absolute;
-  left: 20px;
-  top: 120px;
-
+ .empty-viewer {
   display: flex;
-  flex-direction: column;
   align-items: center;
-
-  background: #fff;
-  border-radius: 999px;
-
-  padding: 6px;
-
-  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-}
-
-.zoom-control button {
-  width: 36px;
-  height: 36px;
-
-  border: none;
-  background: transparent;
-
+  justify-content: center;
+  height: 675px;
+  color: #000000;
   font-size: 20px;
-  cursor: pointer;
-}
-
-.zoom-value {
-  font-size: 12px;
-  padding: 4px 0;
-  color: #555;
+  font-weight: 500;
 }

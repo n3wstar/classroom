@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import "./createBuildingModal.css";
+import downloadIcon from "../../assets/download-icon.png";
 
 type Props = {
     onClose: () => void;
@@ -8,7 +9,7 @@ type Props = {
     onSave: (data: {
         name: string;
         image: string;
-        imageName : string;
+        imageName: string;
         floors: number;
     }) => void;
 };
@@ -55,12 +56,14 @@ export const CreateBuildingModal = ({
                         />
                     </div>
 
+                    
                     <div className="field-row">
                         <label className="field-label">
                             Изображение
                         </label>
-
+                        {!image && (
                         <label className="upload-image-btn">
+                            <img src={downloadIcon}></img>
                             Загрузить
 
                             <input
@@ -69,6 +72,8 @@ export const CreateBuildingModal = ({
                                 onChange={handleUpload}
                             />
                         </label>
+                        )}
+                    
 
                         {imageName && (
                             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -78,16 +83,10 @@ export const CreateBuildingModal = ({
 
                                 <button
                                     type="button"
+                                    className="remove-btn"
                                     onClick={() => {
                                         setImage("");
                                         setImageName("");
-                                    }}
-                                    style={{
-                                        border: "none",
-                                        background: "none",
-                                        cursor: "pointer",
-                                        fontSize: 18,
-                                        lineHeight: 1,
                                     }}
                                 >
                                     ×

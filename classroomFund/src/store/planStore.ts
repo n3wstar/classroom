@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Plan, Room } from "../types/plan.types";
+import type { Plan, Schema } from "../types/plan.types";
 
 type PlanStore = {
   plans: Plan[];
@@ -8,9 +8,14 @@ type PlanStore = {
   editingPlanId: string | null;
 
   addPlan: (plan: Plan) => void;
-  updatePlanRooms: (planId: string, rooms: Room[]) => void;
   updatePlan: (plan: Plan) => void;
   deletePlan: (id: string) => void;
+
+  updateSchema: (
+  planId: string,
+  schemaId: string,
+  patch: Partial<Schema>
+) => void;
 
   setActivePlan: (id: string | null) => void;
   setEditingPlan: (id: string | null) => void;
@@ -27,10 +32,10 @@ export const usePlanStore = create<PlanStore>((set) => ({
       plans: [...state.plans, plan],
     })),
 
-  updatePlanRooms: (planId, rooms) =>
+    updatePlan: (plan) =>
     set((state) => ({
       plans: state.plans.map((p) =>
-        p.id === planId ? { ...p, rooms } : p
+        p.id === plan.id ? plan : p
       ),
     })),
 
@@ -44,18 +49,25 @@ export const usePlanStore = create<PlanStore>((set) => ({
       editingPlanId: id
     }),
 
-  updatePlan: (updatedPlan) =>
-    set((state) => ({
-      plans: state.plans.map((p) =>
-        p.id === updatedPlan.id
-          ? updatedPlan
-          : p
-      ),
-    })),
-
   deletePlan: (id) =>
     set((state) => ({
       plans: state.plans.filter((p) => p.id !== id),
     })),
+
+    updateSchema: (planId, schemaId, patch) =>
+  set((state) => ({
+    plans: state.plans.map((plan) =>
+      plan.id !== planId
+        ? plan
+        : {
+            ...plan,
+            schemas: plan.schemas.map((schema) =>
+              schema.id === schemaId
+                ? { ...schema, ...patch }
+                : schema
+            ),
+          }
+    ),
+  })),
 
 }));

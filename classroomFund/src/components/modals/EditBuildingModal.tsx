@@ -8,6 +8,7 @@ import type {
 import { usePlanStore } from "../../store/planStore";
 import "../modals/EditBuildingModal.css";
 import editIcon from "../../assets/edit-icon.png";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
     plan: Plan;
@@ -19,6 +20,7 @@ export const EditBuildingModal = ({ plan, onClose }: Props) => {
     const updatePlan = usePlanStore((s) => s.updatePlan);
 
     const [name, setName] = useState(plan.name);
+    const navigate = useNavigate();
 
     const [previewImage, setPreviewImage] = useState(plan.previewImage);
     const [imageName, setImageName] = useState(plan.previewImageName || "");
@@ -117,7 +119,7 @@ export const EditBuildingModal = ({ plan, onClose }: Props) => {
                                             id: crypto.randomUUID(),
                                             floor: prev.length + 1,
                                             image: "",
-                                            rooms: [],
+                                            areas: [],
                                         },
                                     ]);
                                 }}
@@ -130,9 +132,8 @@ export const EditBuildingModal = ({ plan, onClose }: Props) => {
                     {schemas.map((schema) => (
                         <div key={schema.id} className="schema-row">
 
+                            <div className="field-label">Этаж</div>
                             <div className="floor-box">
-                                <span>Этаж</span>
-
                                 <div className="floor-circle">
                                     <input
                                         value={schema.floor}
@@ -151,47 +152,47 @@ export const EditBuildingModal = ({ plan, onClose }: Props) => {
                                 </div>
                             </div>
 
+
                             {!schema.image ? (
-                                <label className="upload-link">
-                                    <img
-                                        src={editIcon}
-                                        style={{
-                                            width: 16,
-                                            height: 16,
-                                            objectFit: "contain",
-                                        }}
-                                    />
+                                <button
+                                    type="button"
+                                    className="upload-link"
+                                    onClick={() => {
+                                        navigate("/editor", {
+                                            state: {
+                                                planId: plan.id,
+                                                schemaId: schema.id,
+                                            },
+                                        });
+                                    }}
+                                >
+                                    <img src={editIcon} style={{ width: 16, height: 16 }} />
                                     Редактировать схему
-                                    <input
-                                        hidden
-                                        type="file"
-                                        onChange={(e) => {
-                                            const file = e.target.files?.[0];
-                                            if (!file) return;
-
-                                            const image = URL.createObjectURL(file);
-
-                                            setSchemas((prev) =>
-                                                prev.map((s) =>
-                                                    s.id === schema.id
-                                                        ? { ...s, image }
-                                                        : s
-                                                )
-                                            );
-                                        }}
-                                    />
-                                </label>
+                                </button>
                             ) : (
-                                <div className="file-chip">
-                                    <span>Схема загружена</span>
+                                <div
+                                    className="file-chip"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => {
+                                        navigate("/editor", {
+                                            state: {
+                                                planId: plan.id,
+                                                schemaId: schema.id,
+                                            },
+                                        });
+                                    }}
+                                >
+                                    <span>{schema.imageName || "Схема"}</span>
 
                                     <button
                                         className="file-remove"
-                                        onClick={() => {
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+
                                             setSchemas((prev) =>
                                                 prev.map((s) =>
                                                     s.id === schema.id
-                                                        ? { ...s, image: "" }
+                                                        ? { ...s, image: "", imageName: "" }
                                                         : s
                                                 )
                                             );
@@ -201,9 +202,9 @@ export const EditBuildingModal = ({ plan, onClose }: Props) => {
                                     </button>
                                 </div>
                             )}
+
                         </div>
                     ))}
-
                 </div>
 
                 <div className="modal-footer">
