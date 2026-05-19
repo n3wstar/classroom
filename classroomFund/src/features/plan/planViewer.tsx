@@ -31,8 +31,8 @@ export const PlanViewer = ({ schema, onRoomClick }: Props) => {
           <polygon
             key={area.id}
             points={area.points.map((p) => `${p.x},${p.y}`).join(" ")}
-            fill="#FFE082"
-            opacity="0.5"
+            fill="#94A3B8"
+            opacity="0.3"
             style={{ cursor: "pointer" }}
             onClick={() => onRoomClick(area)}
           />

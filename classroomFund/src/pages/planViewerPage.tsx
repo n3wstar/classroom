@@ -5,6 +5,8 @@ import { Header } from "../components/Header";
 import { usePlanStore } from "../store/planStore";
 import "../features/plan/styles/planManager.css";
 import "../pages/styles/planViewerPage.css";
+import type { RoomData } from "../types/plan.types";
+import { RoomCard } from "../components/modals/roomCard";
 
 export const PlanViewerPage = () => {
   const activePlanId = usePlanStore((s) => s.activePlanId);
@@ -13,51 +15,75 @@ export const PlanViewerPage = () => {
     s.plans.find((p) => p.id === activePlanId)
   );
 
+  const rooms = usePlanStore((s) => s.rooms);
+  const updateRoom = usePlanStore((s) => s.updateRoom);
+
   const [activeFloor, setActiveFloor] = useState(0);
+  const [selectedRoom, setSelectedRoom] = useState<RoomData | null>(null);
 
-  if (!plan) {
-    return <div>План не найден</div>;
-  }
+  if (!plan) return <div>План не найден</div>;
 
-  const currentSchema = plan.schemas[activeFloor];
-  const isSchemaEmpty = !currentSchema?.image;
+  const schema = plan.schemas[activeFloor];
 
   return (
     <div className="plan-page">
       <Header showSearch />
 
       <div className="viewer-wrapper">
-
         <div className="viewer-center">
-        <p className="viewer-title">{plan.name}</p>
+          <p className="viewer-title">{plan.name}</p>
 
-          {isSchemaEmpty ? (
+          {!schema?.image ? (
             <div className="empty-viewer">
               Схема этажа не загружена
             </div>
           ) : (
             <PlanViewer
               plan={plan}
-              schema={currentSchema}
-              onRoomClick={(room) => {
-                console.log(room);
+              schema={schema}
+              onRoomClick={(area) => {
+                const roomId = area.roomId ?? area.id;
+
+                const existingRoom = rooms.find((r) => r.id === roomId);
+
+                setSelectedRoom(
+                  existingRoom ?? {
+                    id: roomId,
+                    number: "",
+                    floorId: String(activeFloor),
+                    purpose: "",
+                    capacity: 0,
+                    description: "",
+                    features: [],
+                    media: [],
+                  }
+                );
+              }}
+            />
+          )}
+
+          {selectedRoom && (
+            <RoomCard
+              room={selectedRoom}
+              onClose={() => setSelectedRoom(null)}
+              onSave={(updated) => {
+                updateRoom(updated);
+                setSelectedRoom(updated);
               }}
             />
           )}
 
           <div className="floors-bar">
-            {plan.schemas.map((schema, index) => (
+            {plan.schemas.map((s, i) => (
               <button
-                key={schema.id}
-                className={`floor-btn ${activeFloor === index ? "active" : ""
-                  }`}
-                onClick={() => setActiveFloor(index)}
+                key={s.id}
+                className={`floor-btn ${activeFloor === i ? "active" : ""}`}
+                onClick={() => setActiveFloor(i)}
               >
-                {schema.floor}
+                {s.floor}
               </button>
             ))}
           </div>
-
         </div>
       </div>
     </div>

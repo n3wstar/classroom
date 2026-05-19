@@ -17,7 +17,7 @@ export const Header = ({
 
       <div
         className="header-title"
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/plans")}
       >
         Аудитория.УРФУ
       </div>

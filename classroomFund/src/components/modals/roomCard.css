@@ -1,0 +1,290 @@
+.room-card {
+  position: absolute;
+  top: 80px;
+  right: 0;
+
+  width: 720px;
+  height: 100vh;
+
+  background: #ffffff;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
+
+  display: flex;
+  flex-direction: column;
+
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+
+  z-index: 1000;
+  font-family: "Inter";
+
+  overflow: hidden;
+}
+
+/* ===== HEADER ===== */
+.room-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 20px 20px 12px;
+  border-bottom: 1px solid #eef2f6;
+}
+
+.room-card-header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+  color: #1a1f36;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.room-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.icon-btn {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.icon-btn img {
+  width: 16px;
+  height: 16px;
+}
+
+/* ===== TABS ===== */
+.room-tabs {
+  padding: 12px 20px;
+  border-bottom: 1px solid #eef2f6;
+}
+
+.room-tabs-inner {
+  display: flex;
+  background: #e0e0e0;
+  border-radius: 999px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.tab {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+
+  font-size: 13px;
+  color: #5b6e8c;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #1976d2;
+  color: #fff;
+}
+
+/* ===== INFO ===== */
+.room-info {
+  padding: 16px 20px;
+}
+
+.room-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 8px 0;
+  font-size: 16px;
+  color: #757575;
+}
+
+.room-row span:first-child {
+  color: #5b6e8c;
+}
+
+.room-row span:last-child {
+  color: #1a1f36;
+}
+
+/* ===== EQUIPMENT ===== */
+.room-equipment {
+  padding: 16px 20px;
+}
+
+
+.equipment-header {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #757575;
+  text-align: left;
+}
+
+/* обёртка таблицы */
+.table-wrapper {
+  width: 100%;
+  border: 1.5px solid #d1d1d1;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* ===== TABLE ===== */
+.equipment-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.equipment-table th,
+.equipment-table td {
+  padding: 8px 10px;
+  font-size: 13px;
+  color: #1a1f36;
+  text-align: left;
+
+  border-bottom: 1px solid #d1d1d1;
+  border-right: 1px solid #d1d1d1;
+}
+
+/* равные колонки */
+.equipment-table th,
+.equipment-table td {
+  width: 50%;
+}
+
+.equipment-table th:last-child,
+.equipment-table td:last-child {
+  border-right: none;
+}
+
+.equipment-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.equipment-table tbody tr:hover {
+  background: #f8fafd;
+}
+
+/* ===== MEDIA ===== */
+.room-media {
+  padding: 0 20px 16px 20px;
+}
+
+/* header: заголовок + кнопки в одну линию */
+.media-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* слово "Мультимедиа" слева */
+.media-title {
+  font-size: 16px;
+  color: #757575;
+}
+
+/* кнопки справа */
+.media-actions {
+  display: flex;
+  gap: 16px;
+}
+
+/* кнопки как текст */
+.media-actions button {
+  background: transparent;
+  border: none;
+  padding: 0;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  color: #212121;
+  cursor: pointer;
+
+  text-decoration: none;
+  outline: none;
+
+  transition: color 0.2s ease;
+}
+
+.media-actions button:focus,
+.media-actions button:active {
+  outline: none;
+  text-decoration: none;
+}
+
+/* убирает странный браузерный стиль */
+.media-actions button::-moz-focus-inner {
+  border: 0;
+}
+
+/* изображения */
+.media-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+
+.media-big:hover {
+  transform: scale(1.01);
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.panorama-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.media-big {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.image-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+
+  background: rgba(0, 0, 0, 0.9);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 99999; /* важно */
+}
+
+.fullscreen-img {
+  max-width: 92vw;
+  max-height: 92vh;
+
+  object-fit: contain;
+
+  border-radius: 12px;
+
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.6);
+
+  cursor: zoom-out;
+}
