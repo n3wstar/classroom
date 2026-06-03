@@ -46,8 +46,8 @@
 }
 
 .icon-btn {
-  width: 34px;
-  height: 34px;
+  width: 14px;
+  height: 14px;
 
   display: flex;
   align-items: center;
@@ -60,7 +60,7 @@
 
 .icon-btn img {
   width: 16px;
-  height: 16px;
+  height: 11px;
 }
 
 /* ===== TABS ===== */
@@ -109,12 +109,56 @@
   color: #757575;
 }
 
-.room-row span:first-child {
-  color: #5b6e8c;
+.custom-select {
+    position: relative;
+    margin-left: auto;
+    display: flex;
+    justify-content: flex-end;
 }
 
-.room-row span:last-child {
-  color: #1a1f36;
+.selected {
+    padding: 14px 10px;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #1a1f36;
+    cursor: pointer;
+    min-width: 220px;
+    text-align: right; 
+}
+
+.dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border: 1px solid #d0d7de;
+    border-radius: 25px;
+    z-index: 100;
+}
+
+.option {
+    display: flex;         
+    align-items: center;
+    padding: 8px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    color: #212121;
+}
+
+.option:hover {
+    background-color: #D1D1D1;
+}
+.option:first-child:hover {
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+}
+
+.option:last-child:hover {
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
 }
 
 /* ===== EQUIPMENT ===== */
@@ -122,12 +166,35 @@
   padding: 16px 20px;
 }
 
-
 .equipment-header {
   font-size: 16px;
   margin-bottom: 10px;
   color: #757575;
   text-align: left;
+  display: flex;
+  align-items: center;
+}
+
+.equipment-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.edit-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.edit-btn img{
+  width: 15px;
+  height: 15px;
 }
 
 /* обёртка таблицы */
@@ -197,7 +264,7 @@
 /* кнопки справа */
 .media-actions {
   display: flex;
-  gap: 16px;
+  gap: 8px;
 }
 
 /* кнопки как текст */
@@ -206,12 +273,11 @@
   border: none;
   padding: 0;
 
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
 
   color: #212121;
   cursor: pointer;
-
   text-decoration: none;
   outline: none;
 
@@ -222,11 +288,6 @@
 .media-actions button:active {
   outline: none;
   text-decoration: none;
-}
-
-/* убирает странный браузерный стиль */
-.media-actions button::-moz-focus-inner {
-  border: 0;
 }
 
 /* изображения */
@@ -273,7 +334,7 @@
   align-items: center;
   justify-content: center;
 
-  z-index: 99999; /* важно */
+  z-index: 99999;
 }
 
 .fullscreen-img {
@@ -287,4 +348,44 @@
   box-shadow: 0 10px 50px rgba(0, 0, 0, 0.6);
 
   cursor: zoom-out;
+}
+
+.room-number-input {
+    width: 140px;
+    padding: 6px 10px;
+    font-size: 24px;
+    font-weight: 600;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+}
+
+.media-item {
+    position: relative;
+}
+
+.delete-media-btn {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+
+    width: 32px;
+    height: 32px;
+
+    border: none;
+    border-radius: 50%;
+
+    background-color: rgba(0, 0, 0, 0.6);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+     z-index: 10;
+}
+
+.delete-media-btn img {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) invert(1);
 }

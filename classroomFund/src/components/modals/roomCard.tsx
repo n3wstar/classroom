@@ -4,7 +4,10 @@ import { useRef, useState } from "react";
 import type { RoomData, RoomType, RoomMedia } from "../../types/plan.types";
 
 import editIcon from "../../assets/edit-icon.png";
-import saveIcon from "../../assets/galochka.png";
+import saveIcon from "../../assets/saveIcon.png";
+import trashIcon from "../../assets/trashIcon.png";
+import uploadIcon from "../../assets/uploadIcon.png";
+import addIcon from "../../assets/plus.png";
 
 type Props = {
     room: RoomData;
@@ -13,11 +16,13 @@ type Props = {
 };
 
 const ROOM_TYPES: RoomType[] = [
-    "Лекционная",
-    "Лабораторная",
-    "Мультимедийная",
+    "Лекционная аудитория",
+    "Лаборатория",
+    "Мультимедийная аудитория",
+    "Административный кабинет",
+    "Компьютерный класс",
     "Склад",
-    "Компьютерный класс"
+    "Техническое помещение",
 ];
 
 const defaultFeatures = [
@@ -29,6 +34,7 @@ export const RoomCard = ({ room, onClose, onSave }: Props) => {
     const [isEdit, setIsEdit] = useState(false);
     const [activeTab, setActiveTab] = useState<"main" | "requests">("main");
     const [fullscreenImg, setFullscreenImg] = useState<string | null>(null);
+    const [openSelect, setOpenSelect] = useState(false);
 
     const photoInputRef = useRef<HTMLInputElement | null>(null);
     const panoInputRef = useRef<HTMLInputElement | null>(null);
@@ -57,9 +63,24 @@ export const RoomCard = ({ room, onClose, onSave }: Props) => {
             sortOrder: form.media.length,
         };
 
-        setForm(p => ({
-            ...p,
-            media: [...p.media, newMedia],
+        setForm((prev) => ({
+            ...prev,
+            media:
+                type === "panorama"
+                    ? [
+                        ...prev.media.filter(
+                            (m) => m.mediaType !== "panorama"
+                        ),
+                        newMedia,
+                    ]
+                    : [...prev.media, newMedia],
+        }));
+    };
+
+    const deleteMedia = (url: string) => {
+        setForm((prev) => ({
+            ...prev,
+            media: prev.media.filter((m) => m.url !== url),
         }));
     };
 
@@ -83,7 +104,20 @@ export const RoomCard = ({ room, onClose, onSave }: Props) => {
 
             {/* HEADER */}
             <div className="room-card-header">
-                <h2>{form.number || ""}</h2>
+                {isEdit ? (
+                    <input
+                        className="room-number-input"
+                        value={form.number ?? ""}
+                        onChange={(e) =>
+                            setForm((prev) => ({
+                                ...prev,
+                                number: e.target.value,
+                            }))
+                        }
+                    />
+                ) : (
+                    <h2>{form.number || ""}</h2>
+                )}
 
                 <div className="room-actions">
                     <button onClick={toggleEdit} className="icon-btn">
@@ -124,24 +158,38 @@ export const RoomCard = ({ room, onClose, onSave }: Props) => {
                             <span>Тип помещения</span>
 
                             {isEdit ? (
-                                <select
-                                    value={form.purpose}
-                                    onChange={(e) =>
-                                        setForm(p => ({
-                                            ...p,
-                                            purpose: e.target.value as RoomType,
-                                        }))
-                                    }
-                                >
-                                    {ROOM_TYPES.map(t => (
-                                        <option key={t} value={t}>{t}</option>
-                                    ))}
-                                </select>
+                                <div className="custom-select">
+                                    <div
+                                        className="selected"
+                                        onClick={() => setOpenSelect(p => !p)}
+                                    >
+                                        {form.purpose || "Выберите тип"}
+                                    </div>
+
+                                    {openSelect && (
+                                        <div className="dropdown">
+                                            {ROOM_TYPES.map((t) => (
+                                                <div
+                                                    key={t}
+                                                    className="option"
+                                                    onClick={() => {
+                                                        setForm((p) => ({
+                                                            ...p,
+                                                            purpose: t as RoomType,
+                                                        }));
+                                                        setOpenSelect(false);
+                                                    }}
+                                                >
+                                                    {t}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             ) : (
                                 <span>{form.purpose}</span>
                             )}
                         </div>
-
                         <div className="room-row">
                             <span>Вместимость</span>
 
@@ -166,8 +214,14 @@ export const RoomCard = ({ room, onClose, onSave }: Props) => {
                     <div className="room-equipment">
                         <div className="equipment-header">
                             <span>Оснащение</span>
-                        </div>
 
+                            {isEdit && (<div className="equipment-actions">
+                                <button className="edit-btn">
+                                    <img src={editIcon} />
+                                    Редактировать
+                                </button>
+                            </div>)}
+                        </div>
                         <div className="table-wrapper">
                             <table className="equipment-table">
                                 <thead>
@@ -198,41 +252,60 @@ export const RoomCard = ({ room, onClose, onSave }: Props) => {
 
                                 {isEdit && (
                                     <div className="media-actions">
-                                        <button onClick={() => photoInputRef.current?.click()}>
-                                            Добавить фото
-                                        </button>
-
+                                        <img src={uploadIcon}></img>
                                         <button onClick={() => panoInputRef.current?.click()}>
                                             Загрузить панораму
+                                        </button>
+                                        <img src={addIcon}></img>
+                                        <button onClick={() => photoInputRef.current?.click()}>
+                                            Добавить фото
                                         </button>
                                     </div>
                                 )}
                             </div>
 
-                            {/* PANORAMA (1 колонка) */}
                             {panoramas.length > 0 && (
                                 <div className="media-grid panorama-grid">
                                     {panoramas.map((m, i) => (
-                                        <img
-                                            key={i}
-                                            src={m.thumbnailUrl || m.url}
-                                            className="media-big"
-                                            onClick={() => setFullscreenImg(m.url)}
-                                        />
+                                        <div className="media-item" key={i}>
+                                            {isEdit && (
+                                                <button
+                                                    className="delete-media-btn"
+                                                    onClick={() => deleteMedia(m.url)}
+                                                >
+                                                    <img src={trashIcon}></img>
+                                                </button>
+                                            )}
+
+                                            <img
+                                                src={m.thumbnailUrl || m.url}
+                                                className="media-big"
+                                                onClick={() => setFullscreenImg(m.url)}
+                                            />
+                                        </div>
                                     ))}
                                 </div>
                             )}
 
-                            {/* PHOTOS (2 колонки) */}
                             {photos.length > 0 && (
                                 <div className="media-grid photo-grid">
                                     {photos.map((m, i) => (
-                                        <img
-                                            key={i}
-                                            src={m.thumbnailUrl || m.url}
-                                            className="media-big"
-                                            onClick={() => setFullscreenImg(m.url)}
-                                        />
+                                        <div className="media-item" key={i}>
+                                            {isEdit && (
+                                                <button
+                                                    className="delete-media-btn"
+                                                    onClick={() => deleteMedia(m.url)}
+                                                >
+                                                    <img src={trashIcon}></img>
+                                                </button>
+                                            )}
+
+                                            <img
+                                                src={m.thumbnailUrl || m.url}
+                                                className="media-big"
+                                                onClick={() => setFullscreenImg(m.url)}
+                                            />
+                                        </div>
                                     ))}
                                 </div>
                             )}
@@ -262,7 +335,8 @@ export const RoomCard = ({ room, onClose, onSave }: Props) => {
                         </div>
                     )}
                 </>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 };
