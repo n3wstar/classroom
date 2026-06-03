@@ -1,6 +1,6 @@
 
 import { PlanViewer } from "../features/plan/planViewer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Header } from "../components/Header";
 import { usePlanStore } from "../store/planStore";
 import "../features/plan/styles/planManager.css";
@@ -20,6 +20,22 @@ export const PlanViewerPage = () => {
 
   const [activeFloor, setActiveFloor] = useState(0);
   const [selectedRoom, setSelectedRoom] = useState<RoomData | null>(null);
+
+  useEffect(() => {
+    if (!selectedRoom) return;
+
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedRoom(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleEsc);
+
+    return () => {
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [selectedRoom]);
 
   if (!plan) return <div>План не найден</div>;
 
@@ -63,14 +79,25 @@ export const PlanViewerPage = () => {
           )}
 
           {selectedRoom && (
-            <RoomCard
-              room={selectedRoom}
-              onClose={() => setSelectedRoom(null)}
-              onSave={(updated) => {
-                updateRoom(updated);
-                setSelectedRoom(updated);
-              }}
-            />
+            <div
+              className="modal-overlay"
+              onClick={() => setSelectedRoom(null)}
+            >
+              <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <RoomCard
+                  key={selectedRoom.id}
+                  room={selectedRoom}
+                  onClose={() => setSelectedRoom(null)}
+                  onSave={(updated) => {
+                    updateRoom(updated);
+                    setSelectedRoom(updated);
+                  }}
+                />
+              </div>
+            </div>
           )}
 
           <div className="floors-bar">

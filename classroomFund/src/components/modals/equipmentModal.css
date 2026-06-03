@@ -1,0 +1,184 @@
+.equipment-modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 12px;
+}
+
+/* LEFT TITLE */
+.equipment-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* RIGHT ICONS */
+.equipment-actions {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+/* ICON BUTTONS */
+.equipment-icon-btn {
+    width: 16px;
+    height: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    background: #fff;
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+/* =========================
+   TABS (копия RoomCard стиля)
+========================= */
+
+.equipment-tabs {
+    display: flex;
+    width: 100%;
+    background: #f3f4f6;
+    padding: 4px;
+    border-radius: 12px;
+    gap: 4px;
+}
+
+.equipment-tab {
+    flex: 1;
+    border-radius: 25px;
+    padding: 8px 0;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    transition: 0.2s;
+}
+
+
+/* ACTIVE TAB */
+.equipment-tab.active {
+    background: #2563eb;
+    color: white;
+}
+
+.equipment-header-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 12px; /* отступ до таблицы */
+}
+
+
+/* =========================
+   TABLE WRAPPER
+========================= */
+
+.equipment-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    border: none; 
+}
+
+.table-wrapper {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* cells */
+.equipment-table th,
+.equipment-table td {
+    padding: 10px;
+    border-bottom: 1px solid #e5e7eb;
+    border-right: 1px solid #e5e7eb;
+}
+
+/* убираем правую у последней колонки */
+.equipment-table th:last-child,
+.equipment-table td:last-child {
+    border-right: none;
+}
+
+.equipment-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* =========================
+   INPUTS (как в карточке)
+========================= */
+
+.equipment-table input {
+    width: 100%;
+    padding: 6px 8px;
+
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+    outline: none;
+    box-sizing: border-box;
+}
+
+/* =========================
+   FOOTER BUTTONS (как icon-btn style)
+========================= */
+
+.equipment-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.equipment-add-btn {
+    border: none;
+    background: none;
+    padding: 0;
+    outline: none;
+    box-shadow: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* SAVE ICON BUTTON */
+.equipment-save-btn {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 10px;
+    border: none;
+
+    background: #2563eb;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+/* CLOSE ICON */
+.equipment-close-btn {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+
+    background: white;
+    cursor: pointer;
+}
+
+
+/* hover */
+.equipment-footer button:hover {
+    opacity: 0.9;
+}
+

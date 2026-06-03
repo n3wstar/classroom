@@ -33,11 +33,15 @@ export type Point = {
   y: number;
 };
 
-export type RoomFeature = {
-  featureName: string;
-  featureValue: string;
-  quantity: number;
-  technicalSpecs: string;
+export type Category = "furniture" | "tech";
+
+export type EquipmentItem = {
+    id: string;
+    category: Category;
+    name: string;
+    quantity: number;
+    roomId: string;
+    properties: Record<string, unknown>;
 };
 
 export type RoomMedia = {
@@ -60,7 +64,7 @@ export type RoomData = {
 
   description: string;
 
-  features: RoomFeature[];
+  features: EquipmentItem[];
 
   media: RoomMedia[];
 };
