@@ -1,84 +1,28 @@
 import { create } from "zustand";
-import type { Plan, RoomData, Schema } from "../types/plan.types";
+import type { Building, RoomData} from "../types/plan.types";
 
 type PlanStore = {
-  plans: Plan[];
-
+  buildings: Building[];
   rooms: RoomData[];
 
-  activePlanId: string | null;
-  editingPlanId: string | null;
+  activeBuildingId: string | null;
 
-  addPlan: (plan: Plan) => void;
-  updatePlan: (plan: Plan) => void;
-  deletePlan: (id: string) => void;
-
+  setBuildings: (b: Building[]) => void;
   setActivePlan: (id: string | null) => void;
-  setEditingPlan: (id: string | null) => void;
-
-  updateSchema: (
-    planId: string,
-    schemaId: string,
-    patch: Partial<Schema>
-  ) => void;
 
   updateRoom: (room: RoomData) => void;
-
   getRoomById: (id: string) => RoomData | undefined;
 };
 
 export const usePlanStore = create<PlanStore>((set, get) => ({
-  plans: [],
+  buildings: [],
   rooms: [],
 
-  activePlanId: null,
-  editingPlanId: null,
+  activeBuildingId: null,
 
-  addPlan: (plan) =>
-    set((state) => ({
-      plans: [...state.plans, plan],
-    })),
+  setBuildings: (buildings) => set({ buildings }),
 
-  updatePlan: (plan) =>
-    set((state) => ({
-      plans: state.plans.map((p) =>
-        p.id === plan.id ? plan : p
-      ),
-    })),
-
-  deletePlan: (id) =>
-    set((state) => ({
-      plans: state.plans.filter((p) => p.id !== id),
-    })),
-
-
-  setActivePlan: (id) =>
-    set(() => ({
-      activePlanId: id,
-    })),
-
-  setEditingPlan: (id) =>
-    set({
-      editingPlanId: id,
-    }),
-
-  
-  updateSchema: (planId, schemaId, patch) =>
-    set((state) => ({
-      plans: state.plans.map((plan) =>
-        plan.id !== planId
-          ? plan
-          : {
-              ...plan,
-              schemas: plan.schemas.map((schema) =>
-                schema.id === schemaId
-                  ? { ...schema, ...patch }
-                  : schema
-              ),
-            }
-      ),
-    })),
-
+  setActivePlan: (id) => set({ activeBuildingId: id }),
 
   updateRoom: (room) =>
     set((state) => {
@@ -90,12 +34,8 @@ export const usePlanStore = create<PlanStore>((set, get) => ({
         state.rooms.push(room);
       }
 
-      return {
-        rooms: [...state.rooms],
-      };
+      return { rooms: [...state.rooms] };
     }),
 
-  getRoomById: (id) => {
-    return get().rooms.find((r) => r.id === id);
-  },
+  getRoomById: (id) => get().rooms.find((r) => r.id === id),
 }));

@@ -1,18 +1,19 @@
 
-import { PlanViewer } from "../features/plan/planViewer";
 import { useEffect, useState } from "react";
 import { Header } from "../components/Header";
 import { usePlanStore } from "../store/planStore";
 import "../features/plan/styles/planManager.css";
 import "../pages/styles/planViewerPage.css";
+
 import type { RoomData } from "../types/plan.types";
 import { RoomCard } from "../components/modals/roomCard";
+import { PlanViewer } from "../features/plan/planViewer";
 
 export const PlanViewerPage = () => {
-  const activePlanId = usePlanStore((s) => s.activePlanId);
+  const activeBuildingId = usePlanStore((s) => s.activeBuildingId);
 
-  const plan = usePlanStore((s) =>
-    s.plans.find((p) => p.id === activePlanId)
+  const building = usePlanStore((s) =>
+    s.buildings.find((b) => b.id === activeBuildingId)
   );
 
   const rooms = usePlanStore((s) => s.rooms);
@@ -25,21 +26,25 @@ export const PlanViewerPage = () => {
     if (!selectedRoom) return;
 
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setSelectedRoom(null);
-      }
+      if (e.key === "Escape") setSelectedRoom(null);
     };
 
     window.addEventListener("keydown", handleEsc);
-
-    return () => {
-      window.removeEventListener("keydown", handleEsc);
-    };
+    return () => window.removeEventListener("keydown", handleEsc);
   }, [selectedRoom]);
 
-  if (!plan) return <div>План не найден</div>;
+  if (!building) return <div>Здание не найдено</div>;
 
-  const schema = plan.schemas[activeFloor];
+  const floor = building.floors?.[activeFloor];
+
+  if (!floor) {
+    return (
+      <div className="plan-page">
+        <Header showSearch />
+        <div className="empty-viewer">Этаж не найден</div>
+      </div>
+    );
+  }
 
   return (
     <div className="plan-page">
@@ -47,16 +52,17 @@ export const PlanViewerPage = () => {
 
       <div className="viewer-wrapper">
         <div className="viewer-center">
-          <p className="viewer-title">{plan.name}</p>
+          <p className="viewer-title">{building.name}</p>
 
-          {!schema?.image ? (
+          {/* VIEWER */}
+          {!floor.image ? (
             <div className="empty-viewer">
               Схема этажа не загружена
             </div>
           ) : (
             <PlanViewer
-              plan={plan}
-              schema={schema}
+              schemaId={floor.id}
+              image={floor.image}
               onRoomClick={(area) => {
                 const roomId = area.roomId ?? area.id;
 
@@ -66,7 +72,7 @@ export const PlanViewerPage = () => {
                   existingRoom ?? {
                     id: roomId,
                     number: "",
-                    floorId: String(activeFloor),
+                    floorId: floor.id,
                     purpose: "",
                     capacity: 0,
                     description: "",
@@ -78,6 +84,7 @@ export const PlanViewerPage = () => {
             />
           )}
 
+          {/* MODAL */}
           {selectedRoom && (
             <div
               className="modal-overlay"
@@ -88,7 +95,6 @@ export const PlanViewerPage = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <RoomCard
-                  key={selectedRoom.id}
                   room={selectedRoom}
                   onClose={() => setSelectedRoom(null)}
                   onSave={(updated) => {
@@ -100,14 +106,15 @@ export const PlanViewerPage = () => {
             </div>
           )}
 
+          {/* FLOORS */}
           <div className="floors-bar">
-            {plan.schemas.map((s, i) => (
+            {building.floors.map((f, i) => (
               <button
-                key={s.id}
+                key={f.id}
                 className={`floor-btn ${activeFloor === i ? "active" : ""}`}
                 onClick={() => setActiveFloor(i)}
               >
-                {s.floor}
+                {f.number}
               </button>
             ))}
           </div>

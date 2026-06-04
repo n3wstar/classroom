@@ -1,4 +1,5 @@
-import type { Plan } from "../../types/plan.types";
+
+import type { Building } from "../../types/plan.types";
 import "../plan/styles/planList.css";
 import { useState } from "react";
 
@@ -8,13 +9,13 @@ export const PlanList = ({
   onDelete,
   onEdit,
 }: {
-  plans: Plan[];
-  onSelect: (plan: Plan) => void;
+  plans: Building[];
+  onSelect: (plan: Building) => void;
   onDelete: (id: string) => void;
-  onEdit: (plan: Plan) => void;
+  onEdit: (plan: Building) => void;
 }) => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
-  const [deletePlan, setDeletePlan] = useState<Plan | null>(null);
+  const [deletePlan, setDeletePlan] = useState<Building | null>(null);
 
   const closeModal = () => setDeletePlan(null);
 
@@ -121,7 +122,7 @@ export const PlanList = ({
 
             {/* IMAGE */}
             <img
-              src={plan.previewImage}
+              src={plan.photoUrl}
               style={{
                 width: "100%",
                 height: 300,

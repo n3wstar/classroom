@@ -17,49 +17,44 @@ export const PlanEditorPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { planId, schemaId } = location.state as {
-    planId: string;
-    schemaId: string;
+  const { buildingId, floorId } = location.state as {
+    buildingId: string;
+    floorId: string;
   };
 
-  const plan = usePlanStore((s) =>
-    s.plans.find((p) => p.id === planId)
+  const building = usePlanStore((s) =>
+    s.buildings.find((b) => b.id === buildingId)
   );
 
-  const clearSchema = () => {
-    setImage("");
-    setImageName("");
-    setAreas([]);
-  };
+  const floor = building?.floors.find((f) => f.id === floorId);
 
-  const updateSchema = usePlanStore((s) => s.updateSchema);
-
-  const schema = plan?.schemas.find((s) => s.id === schemaId);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [image, setImage] = useState(schema?.image || "");
-  const [imageName, setImageName] = useState(schema?.imageName || "");
-  const [areas, setAreas] = useState<ClickableArea[]>(schema?.areas || []);
+  const [image, setImage] = useState(floor?.image || "");
+  
+  const [areas, setAreas] = useState<ClickableArea[]>([]);
 
   const [drawingMode, setDrawingMode] = useState(false);
 
+  if (!building || !floor) return <div>Здание или этаж не найден</div>;
 
-
-  if (!plan) return <div>План не найден</div>;
-  
+  const clearSchema = () => {
+    setImage("");
+    setAreas([]);
+  };
 
   return (
     <div className="editor-page">
       <Header />
 
       <div className="editor-content">
-
         <div className="editor-top">
-          <h2 className="editor-scheme">Редактор схем</h2>
+          <h2 className="editor-scheme">Редактор этажа</h2>
           <p className="editor-title">
-            {imageName || ""}
+            {building.name} — этаж {floor.number}
           </p>
         </div>
+
         {!image ? (
           <div className="empty-editor">
             Схема этажа не загружена
@@ -77,7 +72,6 @@ export const PlanEditorPage = () => {
       </div>
 
       <div className="editor-footer">
-
         <button
           className="footer-btn upload-btn"
           onClick={() => fileInputRef.current?.click()}
@@ -85,6 +79,7 @@ export const PlanEditorPage = () => {
           <img src={downloadIcon} alt="" />
           Загрузить схему
         </button>
+
         <input
           ref={fileInputRef}
           type="file"
@@ -94,14 +89,10 @@ export const PlanEditorPage = () => {
             if (!file) return;
 
             setImage(URL.createObjectURL(file));
-            setImageName(file.name);
           }}
         />
 
-        <button
-          className="footer-btn delete-btn"
-          onClick={clearSchema}
-        >
+        <button className="footer-btn delete-btn" onClick={clearSchema}>
           <img src={trashIcon} alt="" />
           Удалить схему
         </button>
@@ -110,34 +101,20 @@ export const PlanEditorPage = () => {
           className={`footer-btn add-button ${drawingMode ? "active" : ""}`}
           onClick={() => setDrawingMode((p) => !p)}
         >
-          <img src={plusIcon}></img>
+          <img src={plusIcon} alt="" />
           Добавить область
         </button>
 
-        <button
-          className="footer-btn save-button"
-          onClick={() => {
-            updateSchema(planId, schemaId, {
-              image,
-              imageName,
-              areas,
-            });
-
-            navigate(-1);
-          }}
-        >
+        <button className="footer-btn save-button">
           <img src={saveIcon} alt="" />
           Сохранить
         </button>
 
-        <button
-          className="footer-btn cancel-btn"
-          onClick={() => navigate(-1)}
-        >
+        <button className="footer-btn cancel-btn" onClick={() => navigate(-1)}>
           <img src={xIcon} alt="" />
           Отменить
         </button>
       </div>
-    </div >
+    </div>
   );
 };

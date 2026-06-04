@@ -6,12 +6,20 @@ export type Room = {
   h: number;
 };
 
-export type Plan = {
+
+
+export type Building = {
   id: string;
   name: string;
-  previewImage: string;
-  previewImageName: string; 
-  schemas: Schema[]; 
+  photoUrl: string;
+  previewImageName: string;
+  floors: Floor[];
+};
+
+export type Floor = {
+  id: string;
+  number: number;
+  image?: string; 
 };
 
 export type Schema = {
@@ -27,6 +35,31 @@ export type ClickableArea = {
   points: Point[];
   roomId?: string;
 };
+
+export type CreateClickableAreaDto = {
+  points: Point[];
+  roomId?: string;
+};
+
+export type BuildingDto = {
+  id: string;
+  name: string;
+  photoUrl: string;
+  floorsCount: number;
+};
+
+export type CreateBuildingDto = {
+  name: string;
+  photoUrl: string;
+  floorsCount: number;
+};
+
+export type FloorUI = {
+  id: string;
+  number: number;
+};
+
+export type UpdateClickableAreaDto = Partial<CreateClickableAreaDto>;
 
 export type Point = {
   x: number;
