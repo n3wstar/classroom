@@ -84,7 +84,7 @@ export const PlanViewerPage = () => {
               onClick={() => setSelectedRoom(null)}
             >
               <div
-                className="modal-content"
+                className="modal-content1"
                 onClick={(e) => e.stopPropagation()}
               >
                 <RoomCard

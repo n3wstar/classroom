@@ -11,6 +11,7 @@ import addIcon from "../../assets/plus.png";
 import { EquipmentModal } from "./EquipmentModal";
 
 
+
 type Props = {
     room: RoomData;
     onClose: () => void;
@@ -158,6 +159,7 @@ export const RoomCard = ({ room, onClose, onSave }: Props) => {
                 </div>
             </div>
 
+            <div className="room-card-body">
             {/* TABS */}
             <div className="room-tabs">
                 <div className="room-tabs-inner">
@@ -224,6 +226,7 @@ export const RoomCard = ({ room, onClose, onSave }: Props) => {
 
                             {isEdit ? (
                                 <input
+                                    className="capacity-input"
                                     type="number"
                                     value={form.capacity}
                                     onChange={(e) =>
@@ -324,43 +327,97 @@ export const RoomCard = ({ room, onClose, onSave }: Props) => {
                                 )}
                             </div>
 
-                            {panoramas.map((m, i) => (
-                                <div className="media-item" key={i}>
-                                    {isEdit && (
-                                        <button
-                                            className="delete-media-btn"
-                                            onClick={() => deleteMedia(m.url)}
-                                        >
-                                            <img src={trashIcon} />
-                                        </button>
-                                    )}
+                            {panoramas.length > 0 && (
+                                <div className="panorama-grid">
+                                    {panoramas.slice(0, 1).map((m) => (
+                                        <div className="media-item" key={m.url}>
+                                            {isEdit && (
+                                                <button
+                                                    className="delete-media-btn"
+                                                    onClick={() => deleteMedia(m.url)}
+                                                >
+                                                    <img src={trashIcon} />
+                                                </button>
+                                            )}
 
-                                    <img
-                                        src={m.thumbnailUrl || m.url}
-                                        className="media-big"
-                                        onClick={() => setFullscreenImg(m.url)}
-                                    />
+                                            <img
+                                                src={m.thumbnailUrl || m.url}
+                                                className="media-img media-panorama"
+                                                onClick={() => setFullscreenImg(m.url)}
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            )}
 
-                            {photos.map((m, i) => (
-                                <div className="media-item" key={i}>
-                                    {isEdit && (
-                                        <button
-                                            className="delete-media-btn"
-                                            onClick={() => deleteMedia(m.url)}
-                                        >
-                                            <img src={trashIcon} />
-                                        </button>
-                                    )}
+                            <div className="photo-section">
+                                {photos.length === 1 && (
+                                    <div className="media-item full">
+                                        {isEdit && (
+                                            <button
+                                                className="delete-media-btn"
+                                                onClick={() => deleteMedia(photos[0].url)}
+                                            >
+                                                <img src={trashIcon} />
+                                            </button>
+                                        )}
 
-                                    <img
-                                        src={m.thumbnailUrl || m.url}
-                                        className="media-big"
-                                        onClick={() => setFullscreenImg(m.url)}
-                                    />
-                                </div>
-                            ))}
+                                        <img
+                                            src={photos[0].thumbnailUrl || photos[0].url}
+                                            className="media-big"
+                                            onClick={() => setFullscreenImg(photos[0].url)}
+                                        />
+                                    </div>
+                                )}
+
+                                {photos.length === 2 && (
+                                    <div className="photo-grid">
+                                        {photos.map((m) => (
+                                            <div className="media-item" key={m.url}>
+                                                {isEdit && (
+                                                    <button
+                                                        className="delete-media-btn"
+                                                        onClick={() => deleteMedia(m.url)}
+                                                    >
+                                                        <img src={trashIcon} />
+                                                    </button>
+                                                )}
+
+                                                <img
+                                                    src={m.thumbnailUrl || m.url}
+                                                    className="media-big"
+                                                    onClick={() => setFullscreenImg(m.url)}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {photos.length >= 3 && (
+                                    <div className="photo-carousel">
+                                        <div className="photo-scroll">
+                                            {photos.map((m) => (
+                                                <div className="carousel-item" key={m.url}>
+                                                    {isEdit && (
+                                                        <button
+                                                            className="delete-media-btn"
+                                                            onClick={() => deleteMedia(m.url)}
+                                                        >
+                                                            <img src={trashIcon} />
+                                                        </button>
+                                                    )}
+
+                                                    <img
+                                                        src={m.thumbnailUrl || m.url}
+                                                        className="media-big"
+                                                        onClick={() => setFullscreenImg(m.url)}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
 
                             <input
                                 hidden
@@ -385,6 +442,7 @@ export const RoomCard = ({ room, onClose, onSave }: Props) => {
                     )}
                 </>
             )}
+            </div>
         </div>
     );
 };

@@ -22,7 +22,6 @@ type PlanStore = {
     patch: Partial<Schema>
   ) => void;
 
-  // 🔥 ВАЖНОЕ ДОБАВЛЕНИЕ
   updateRoom: (room: RoomData) => void;
 
   getRoomById: (id: string) => RoomData | undefined;
@@ -35,9 +34,6 @@ export const usePlanStore = create<PlanStore>((set, get) => ({
   activePlanId: null,
   editingPlanId: null,
 
-  // ======================
-  // PLANS
-  // ======================
   addPlan: (plan) =>
     set((state) => ({
       plans: [...state.plans, plan],
@@ -55,9 +51,7 @@ export const usePlanStore = create<PlanStore>((set, get) => ({
       plans: state.plans.filter((p) => p.id !== id),
     })),
 
-  // ======================
-  // ACTIVE / EDITING
-  // ======================
+
   setActivePlan: (id) =>
     set(() => ({
       activePlanId: id,
@@ -68,9 +62,7 @@ export const usePlanStore = create<PlanStore>((set, get) => ({
       editingPlanId: id,
     }),
 
-  // ======================
-  // SCHEMAS
-  // ======================
+  
   updateSchema: (planId, schemaId, patch) =>
     set((state) => ({
       plans: state.plans.map((plan) =>
@@ -87,9 +79,7 @@ export const usePlanStore = create<PlanStore>((set, get) => ({
       ),
     })),
 
-  // ======================
-  // ROOMS 🔥
-  // ======================
+
   updateRoom: (room) =>
     set((state) => {
       const index = state.rooms.findIndex((r) => r.id === room.id);

@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Category, EquipmentItem } from "../../types/plan.types";
 import "../../components/modals/roomCard.css";
 import "../modals/equipmentModal.css";
+import trashIcon from "../../assets/Icon.png";
 
 type Props = {
     initialItems: EquipmentItem[];
@@ -9,7 +10,6 @@ type Props = {
     onSave: (items: EquipmentItem[]) => void;
 };
 
-// -------------------- helpers --------------------
 
 const getNumber = (value: unknown): number =>
     typeof value === "number" ? value : 0;
@@ -17,7 +17,6 @@ const getNumber = (value: unknown): number =>
 const getString = (value: unknown): string =>
     typeof value === "string" ? value : "";
 
-// -------------------- component --------------------
 
 export const EquipmentModal = ({
     initialItems,
@@ -30,8 +29,7 @@ export const EquipmentModal = ({
 
     const visible = items.filter((i) => i.category === tab);
 
-    // -------------------- update item field --------------------
-
+    
     const updateItem = (
         id: string,
         field: keyof EquipmentItem,
@@ -49,7 +47,6 @@ export const EquipmentModal = ({
         );
     };
 
-    // -------------------- update properties --------------------
 
     const updateProperties = (
         id: string,
@@ -69,8 +66,6 @@ export const EquipmentModal = ({
             )
         );
     };
-
-    // -------------------- add row --------------------
 
     const addRow = () => {
         setItems((prev) => [
@@ -102,14 +97,12 @@ export const EquipmentModal = ({
         ]);
     };
 
-    // -------------------- save --------------------
 
     const save = () => {
         onSave(items);
         onClose();
     };
 
-    // -------------------- UI --------------------
 
     return (
         <div className="equipment-modal">
@@ -161,7 +154,7 @@ export const EquipmentModal = ({
                             <th>Характеристики</th>
                         )}
 
-                        <th>Кол-во</th>
+                        <th>Количество</th>
                     </tr>
                 </thead>
 
@@ -196,7 +189,6 @@ export const EquipmentModal = ({
                                 />
                             </td>
 
-                            {/* FURNITURE FIELDS */}
                             {tab === "furniture" ? (
                                 <>
                                     <td>
@@ -248,7 +240,6 @@ export const EquipmentModal = ({
                                     </td>
                                 </>
                             ) : (
-                                /* TECH FIELDS */
                                 <td>
                                     <input
                                         value={getString(
@@ -263,26 +254,37 @@ export const EquipmentModal = ({
                                 </td>
                             )}
 
-                            {/* QUANTITY */}
                             <td>
-                                <input
-                                    type="number"
-                                    value={item.quantity}
-                                    onChange={(e) =>
-                                        updateItem(
-                                            item.id,
-                                            "quantity",
-                                            Number(e.target.value)
-                                        )
-                                    }
-                                />
+                                <div className="quantity-cell">
+                                    <input
+                                        type="number"
+                                        value={item.quantity}
+                                        onChange={(e) =>
+                                            updateItem(
+                                                item.id,
+                                                "quantity",
+                                                Number(e.target.value)
+                                            )
+                                        }
+                                    />
+
+                                    <button
+                                        className="equipment-delete-btn"
+                                        onClick={() =>
+                                            setItems(prev =>
+                                                prev.filter(i => i.id !== item.id)
+                                            )
+                                        }
+                                    >
+                                        <img src={trashIcon} alt="Удалить" />
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
 
-            {/* FOOTER */}
             <div className="equipment-footer">
                 <button className="equipment-add-btn" onClick={addRow}>+ Добавить</button>
             </div>

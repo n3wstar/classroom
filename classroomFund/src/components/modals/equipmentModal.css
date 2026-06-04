@@ -8,8 +8,10 @@
 
 /* LEFT TITLE */
 .equipment-title {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 600;
+    margin-bottom: 15px;
+    color: #212121;
 }
 
 /* RIGHT ICONS */
@@ -17,6 +19,39 @@
     display: flex;
     gap: 5px;
     align-items: center;
+}
+
+.quantity-cell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.equipment-delete-btn {
+    flex-shrink: 0;
+
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+}
+
+.equipment-delete-btn img {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+    transition: .2s;
+}
+
+.equipment-delete-btn:hover img {
+    opacity: 1;
 }
 
 /* ICON BUTTONS */
@@ -36,9 +71,7 @@
     transition: 0.2s;
 }
 
-/* =========================
-   TABS (копия RoomCard стиля)
-========================= */
+
 
 .equipment-tabs {
     display: flex;
@@ -71,36 +104,39 @@
     flex-direction: column;
     gap: 10px;
     width: 100%;
-    margin-bottom: 12px; /* отступ до таблицы */
+    margin-bottom: 12px; 
 }
 
-
-/* =========================
-   TABLE WRAPPER
-========================= */
 
 .equipment-table {
     width: 100%;
-    border-collapse: collapse;
     table-layout: fixed;
-    border: none; 
+
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
 .table-wrapper {
-    border: 1px solid #e5e7eb;
+    border: 1px solid #D1D1D1;
     border-radius: 12px;
     overflow: hidden;
+}
+
+.equipment-table th{
+    font-size: 16px;
+    text-align: center;
+    font-weight: 500;
+    font-family: 'Inter';
 }
 
 /* cells */
 .equipment-table th,
 .equipment-table td {
     padding: 10px;
-    border-bottom: 1px solid #e5e7eb;
-    border-right: 1px solid #e5e7eb;
+    border-bottom: 1px solid #D1D1D1;
+    border-right: 1px solid #D1D1D1;
 }
 
-/* убираем правую у последней колонки */
 .equipment-table th:last-child,
 .equipment-table td:last-child {
     border-right: none;
@@ -110,24 +146,19 @@
     border-bottom: none;
 }
 
-/* =========================
-   INPUTS (как в карточке)
-========================= */
 
 .equipment-table input {
     width: 100%;
     padding: 6px 8px;
 
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    border: none;
+    background: transparent;
 
     outline: none;
     box-sizing: border-box;
+    font-size: 16px;
+    font-weight: 400;
 }
-
-/* =========================
-   FOOTER BUTTONS (как icon-btn style)
-========================= */
 
 .equipment-footer {
     display: flex;
@@ -176,8 +207,6 @@
     cursor: pointer;
 }
 
-
-/* hover */
 .equipment-footer button:hover {
     opacity: 0.9;
 }
